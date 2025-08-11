@@ -4,7 +4,7 @@
     "slug": "TCM Mobile",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/appicon.png",
+    "icon": "./assets/images/appIcon.png",
     "scheme": "tcmmobileapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -12,13 +12,16 @@
       "supportsTablet": true,
       "bundleIdentifier": "com.tcm.tcmmobile",
       "infoPlist": {
-        "NSCameraUsageDescription": "This app needs access to your camera to scan QR"
+        "NSCameraUsageDescription": "This app needs access to your camera to scan QR",
+        "NSAppTransportSecurity": {
+          "NSAllowsArbitraryLoads": true
+        }
       }
     },
     "android": {
+      "usesCleartextTraffic": true,
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/appicon.png",
-        "backgroundColor": "#ffffff"
+        "foregroundImage": "./assets/images/appIcon.png"
       },
       "edgeToEdgeEnabled": true,
       "package": "com.tcm.tcmmobile",
@@ -29,7 +32,7 @@
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/appicon.png"
+      "favicon": "./assets/images/appIcon.png"
     },
     "plugins": [
       "expo-router",
@@ -37,8 +40,8 @@
         "expo-splash-screen",
         {
           "image": "./assets/images/roundIcon.png",
-          "imageWidth": 250,
-          "resizeMode": "contain",
+          "imageWidth": 270,
+          "resizeMode": "center",
           "backgroundColor": "#ffffff"
         }
       ],
@@ -60,7 +63,9 @@
             "useSQLCipher": false
           },
           "ios": {
-            "customBuildFlags": ["-DSQLITE_ENABLE_DBSTAT_VTAB=1 -DSQLITE_ENABLE_SNAPSHOT=1"]
+            "customBuildFlags": [
+              "-DSQLITE_ENABLE_DBSTAT_VTAB=1 -DSQLITE_ENABLE_SNAPSHOT=1"
+            ]
           }
         }
       ]

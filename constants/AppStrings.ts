@@ -1,8 +1,25 @@
+import { current } from "@reduxjs/toolkit";
+
 export const strings = {
   login: {
     username: "Username",
     password: "Password",
+    changeText: "Change Password",
+    currentPassword: "Current Password",
+    newPassword: "New Password",
+    confirmNewPassword: "Confirm New Password",
     loginText: "Login",
+    logoutText: "Logout",
+    forgotPassword: "Forgot Password?",
+    logoutConfirmation: "Are you sure you want to logout?",
+  },
+  alert: {
+    error: "Error",
+    success: "Success",
+    warning: "Warning",
+    info: "Info",
+    ok: "OK",
+    cancel: "Cancel",
   },
   homeMenu: {
     showQr: "Show QR",

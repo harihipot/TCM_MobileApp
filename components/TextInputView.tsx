@@ -7,7 +7,7 @@ import {
   StyleSheet,
   Text,
   TextInput,
-  View
+  View,
 } from "react-native";
 
 type TextInputViewProps = {
@@ -26,7 +26,7 @@ type TextInputViewProps = {
     | undefined;
   isEditable?: boolean;
   image?: any;
-  imageOnClick?: ()=> void;
+  imageOnClick?: () => void;
 };
 
 export const TextInputComponent = (props: TextInputViewProps) => {
@@ -44,35 +44,46 @@ export const TextInputComponent = (props: TextInputViewProps) => {
     imageOnClick,
   } = props;
   return (
-    <View style={styles.containerStyle}>
-      <View style={styles.textImageContainerStyle}>
-        <TextInput
-          editable={isEditable}
-          placeholder={placeholderText}
-          placeholderTextColor={Colors.textColor}
-          keyboardType={keyboardTypeProp}
-          maxLength={maxLengthProp}
-          style={[styles.inputStyle, inputTextStyle]}
-          value={textValue}
-          onChangeText={(text) => {
-            onChange(text);
-          }}
-          autoCapitalize={autoCapitalizeProp}
-        />
-        {image && (
-          <Pressable onPress={imageOnClick} style={styles.imageContainerStyle}>
-            <Image
-              source={image ? image : roundIcon}
-              style={styles.imageStyle}
-              resizeMode="contain"
-            />
-          </Pressable>
-        )}
+    <>
+      <View style={styles.containerStyle}>
+        <View style={styles.textImageContainerStyle}>
+          <TextInput
+            editable={isEditable}
+            placeholder={placeholderText}
+            placeholderTextColor={Colors.textColor}
+            keyboardType={keyboardTypeProp}
+            maxLength={maxLengthProp}
+            secureTextEntry={
+              placeholderText === "Password" ||
+              placeholderText === "Current Password" ||
+              placeholderText === "New Password" ||
+              placeholderText === "Confirm New Password"
+            }
+            style={[styles.inputStyle, inputTextStyle]}
+            value={textValue}
+            onChangeText={(text) => {
+              onChange(text);
+            }}
+            autoCapitalize={autoCapitalizeProp}
+          />
+          {image && (
+            <Pressable
+              onPress={imageOnClick}
+              style={styles.imageContainerStyle}
+            >
+              <Image
+                source={image ? image : roundIcon}
+                style={styles.imageStyle}
+                resizeMode="contain"
+              />
+            </Pressable>
+          )}
+        </View>
       </View>
       {errorMessage && errorMessage !== "" && (
         <Text style={styles.errorStyle}>{errorMessage}</Text>
       )}
-    </View>
+    </>
   );
 };
 
@@ -85,17 +96,19 @@ const styles = StyleSheet.create({
     marginTop: 25,
   },
   inputStyle: {
+    flex: 1,
     fontSize: 16,
     color: Colors.textColor,
     fontWeight: "500",
     padding: 12,
-    // backgroundColor: "#000000",
   },
   errorStyle: {
     fontSize: 12,
     color: Colors.errorRed,
     paddingTop: 4,
     paddingHorizontal: 10,
+    alignSelf: "flex-start",
+    marginLeft: 40,
   },
   imageContainerStyle: {
     width: 30,

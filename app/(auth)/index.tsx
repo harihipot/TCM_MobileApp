@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
   containerStyle: {
     flex: 1,
     alignItems: "center",
-    marginTop: "50%",
+    marginTop: "40%",
   },
   imageStyle: {
     alignSelf: "center",

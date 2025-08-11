@@ -1,0 +1,42 @@
+# dependency
+# This file is used to ignore files and directories in the root of the project.
+node_modules/
+
+#Expo
+.expo/
+web-build/
+dist/
+expo-env.d.ts
+
+#Native
+.kotlin/
+*.orig.*
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+
+# Metro
+.metro-health-check*
+
+# debug
+.vscode/    
+npm-debug.*
+yarn-debug.*
+yarn-error.*
+
+#macOS
+.DS_Store
+*.pem
+
+# local env files
+.env*.local
+
+# typescript
+*.tsbuildinfo
+
+
+#expo CNG will create this folder if needed
+/ios
+/android            

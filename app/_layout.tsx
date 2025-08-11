@@ -10,6 +10,8 @@ import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
 import "react-native-reanimated";
+import { Provider } from "react-redux";
+import store from "@/store";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -18,6 +20,7 @@ export default function RootLayout() {
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
   });
+
   useEffect(() => {
     if (loaded) {
       SplashScreen.hideAsync();
@@ -25,9 +28,11 @@ export default function RootLayout() {
   }, [loaded]);
 
   return (
-    <ThemeProvider value={isDark ? DarkTheme : DefaultTheme}>
-      <Stack screenOptions={{ headerShown: false }} />
-      <StatusBar style="auto" />
-    </ThemeProvider>
+    <Provider store={store}>
+      <ThemeProvider value={isDark ? DarkTheme : DefaultTheme}>
+        <Stack screenOptions={{ headerShown: false }} />
+        <StatusBar style="auto" />
+      </ThemeProvider>
+    </Provider>
   );
 }
