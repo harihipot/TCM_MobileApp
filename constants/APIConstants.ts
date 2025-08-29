@@ -1,15 +1,19 @@
 export const APIConstants = {
-  BASE_URL: "https://api.example.com", // Base URL for the API
-  TIMEOUT: 5000, // Request timeout in milliseconds
+  BASE_URL: "https://tmc-gmc.el.r.appspot.com", // Base URL for the API
+  TIMEOUT: 10000, // Request timeout in milliseconds
   RETRY_LIMIT: 3, // Maximum number of retry attempts for failed requests
   HEADERS: {
     // Default headers for API requests
     "Content-Type": "application/json",
     Accept: "application/json",
-    Authorization: " Bearer YOUR_API_KEY", // Replace with your actual API key
+    // Authorization header is set dynamically in axiosInstance
   },
   ENDPOINTS: {
     // API endpoints
-    LOGIN_USER: "/user",
+    LOGIN_USER: "/api/gmc/auth/login",
+    CHANGE_PASSWORD: "/api/gmc/auth/change-password",
+    CREATE_USER: "/api/gmc/user",
+    APPLY_LEAVE: "/api/gmc/leave/apply",
+    GET_LEAVE_HISTORY: "api/gmc/leave",
   },
 };

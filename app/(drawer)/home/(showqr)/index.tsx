@@ -1,9 +1,22 @@
 import { roundIcon } from "@/assets/images";
 import { Colors } from "@/constants/Colors";
+import { useLocalSearchParams, useNavigation } from "expo-router";
+import { useEffect } from "react";
 import { SafeAreaView, StyleSheet, Text } from "react-native";
 import QRCode from "react-native-qrcode-svg";
 
 const ShowQRScreen = () => {
+  const navigation = useNavigation();
+  const { title } = useLocalSearchParams();
+
+  useEffect(() => {
+    console.log("ShowQRScreen mounted", title);
+    
+    if (title) {
+      navigation.setOptions({ title });
+    }
+  }, [navigation, title]);
+
   return (
     <SafeAreaView style={styles.containerStyle}>
       <Text style={[styles.textStyle, styles.nameStyle]}>Hariharan S</Text>

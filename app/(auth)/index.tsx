@@ -2,13 +2,16 @@ import { roundIcon } from "@/assets/images";
 import { Button } from "@/components/Button";
 import { TextInputComponent } from "@/components/TextInputView";
 import { strings } from "@/constants/AppStrings";
+import { loginUser } from "@/store/reducers/authSlice";
 import { useNavigation, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { Image, SafeAreaView, StyleSheet } from "react-native";
+import { useDispatch } from "react-redux";
 const LoginScreen = () => {
   const router = useRouter();
-  const [username, setUsername] = useState("");
-  const [password, setpassword] = useState("");
+  const dispatch = useDispatch();
+  const [username, setUsername] = useState("8072807617");
+  const [password, setpassword] = useState("23e5387a6283c437");
 
   const navigation = useNavigation();
 
@@ -25,7 +28,8 @@ const LoginScreen = () => {
   };
 
   const loginClicked = () => {
-    router.replace("./(drawer)/home");
+    dispatch(loginUser({ username, password }));
+    // router.replace("./(drawer)/home");
   };
 
   return (

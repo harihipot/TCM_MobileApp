@@ -5,6 +5,7 @@
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/appIcon.png",
+    "roundIcon": "./assets/images/roundIcon.png",
     "scheme": "tcmmobileapp",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
@@ -40,9 +41,10 @@
         "expo-splash-screen",
         {
           "image": "./assets/images/roundIcon.png",
-          "imageWidth": 270,
-          "resizeMode": "center",
-          "backgroundColor": "#ffffff"
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#ffffff",
+          "imageResizeMode": "center"
         }
       ],
       [

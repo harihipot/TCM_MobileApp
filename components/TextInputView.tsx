@@ -14,7 +14,7 @@ type TextInputViewProps = {
   placeholderText?: any;
   inputTextStyle?: any;
   textValue: any;
-  onChange: any;
+  onChange?:any;
   keyboardTypeProp?: any;
   errorMessage?: any;
   maxLengthProp?: number;

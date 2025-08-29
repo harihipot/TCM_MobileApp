@@ -51,8 +51,8 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },
   camera: {
-    width: 350,
-    height: 350,
+    width: 300,
+    height: 300,
   },
 
   text: {

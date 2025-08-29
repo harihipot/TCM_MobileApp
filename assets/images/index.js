@@ -1,2 +1,4 @@
 export const roundIcon = require("./roundIcon.png");
-export const log0 = require("./appIcon.png");
+export const logo = require("./appIcon.png");
+export const greyedLogo = require("./grayedLogo.png");
+

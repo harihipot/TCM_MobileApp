@@ -7,6 +7,7 @@ import moment from "moment";
 import { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Calendar } from "react-native-calendars";
+
 const ApplyLeavesScreen = () => {
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
@@ -18,19 +19,6 @@ const ApplyLeavesScreen = () => {
   const minDate = moment().add(1, "days").format("YYYY-MM-DD").toString();
   const maxDate = moment().add(60, "days").format("YYYY-MM-DD").toString();
 
-  const fromDateChoose = (date: string) => {
-    setFromDate(date);
-  };
-  const toDateChoose = (date: string) => {
-    setToDate(date);
-    const date1 = moment(fromDate); // Example date 1
-    const date2 = moment(date); // Example date 2
-     const daysDifference = date2.diff(date1, 'days');
-    console.log("ewewewe", daysDifference);
-
-    setSelectedDays(daysDifference.toString());
-  };
-
   const submitLeavesClick = () => {};
 
   const openCanlendar = (isFrom: boolean) => {
@@ -40,7 +28,6 @@ const ApplyLeavesScreen = () => {
 
   return (
     <View style={styles.containerStyle}>
-      <Text> Apply Leave {selectedDays}</Text>
       <>
         <TextInputComponent
           placeholderText={strings.leave.fromDate}
@@ -49,21 +36,27 @@ const ApplyLeavesScreen = () => {
               ? fromDate
               : moment(fromDate).format("DD-MM-YYYY").toString()
           }
-          onChange={fromDateChoose}
+          isEditable={false}
           image={roundIcon}
           imageOnClick={() => openCanlendar(true)}
         />
         <TextInputComponent
+          isEditable={false}
           placeholderText={strings.leave.toDate}
           textValue={
             toDate === ""
               ? toDate
               : moment(toDate).format("DD-MM-YYYY").toString()
           }
-          onChange={toDateChoose}
           image={roundIcon}
           imageOnClick={() => openCanlendar(false)}
         />
+        {selectedDays === "" ? null : (
+          <Text style={styles.textStyle}>
+            you have choosen {selectedDays} days leaves
+          </Text>
+        )}
+
         <Button
           buttonStyle={styles.buttonStyle}
           label={strings.leave.submitLeave}
@@ -72,13 +65,7 @@ const ApplyLeavesScreen = () => {
       </>
       {showCalender && (
         <Calendar
-          style={{
-            position: "absolute",
-            alignSelf: "center",
-            zIndex: 1,
-            top: -300,
-            borderRadius: 20,
-          }}
+          style={styles.calendarStyle}
           theme={{
             arrowColor: Colors.primary,
             todayTextColor: Colors.disabledColor,
@@ -92,8 +79,13 @@ const ApplyLeavesScreen = () => {
           onDayPress={(day) => {
             if (isFrom) {
               setFromDate(day.dateString);
+              setIsFrom(false);
             } else {
+              const date1 = moment.utc(fromDate); // Example date 1
+              const date2 = moment.utc(day.dateString); // Example date 2
+              const daysDifference = date2.diff(date1, "days");
               setToDate(day.dateString);
+              setSelectedDays((daysDifference + 1).toString());
             }
             setShowCalender(false);
           }}
@@ -107,11 +99,23 @@ const styles = StyleSheet.create({
   containerStyle: {
     flex: 1,
     alignItems: "center",
-    justifyContent: "center",
-    // marginTop: 30,
+    marginTop: "30%",
   },
   buttonStyle: {
     marginTop: 40,
+  },
+  textStyle: {
+    fontSize: 18,
+    color: Colors.textColor,
+    marginTop: 30,
+    fontStyle: "italic",
+  },
+  calendarStyle: {
+    position: "absolute",
+    alignSelf: "center",
+    zIndex: 1,
+    top: -300,
+    borderRadius: 20,
   },
 });
 

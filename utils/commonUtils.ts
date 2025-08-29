@@ -18,12 +18,12 @@ export const getDashboardMenu = (role: string) => {
       {
         label: strings.homeMenu.viewBill,
         image: roundIcon,
-        route: "/(drawer)/home/(scanqr)",
+        route: "/(drawer)/home/(viewbill)",
       },
       {
         label: strings.homeMenu.leaveHistory,
         image: roundIcon,
-        route: "/(drawer)/home/(scanqr)",
+        route: "/(drawer)/home/(leavehistory)",
       },
     ];
   } else if (role === "admin") {

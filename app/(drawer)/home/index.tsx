@@ -14,7 +14,12 @@ const HomeScreen = () => {
             <Card
               label={item.label}
               image={item.image}
-              onClick={() => router.navigate(item.route)}
+              onClick={() =>
+                router.push({
+                  pathname: item.route,
+                  params: { title: item.label },
+                })
+              }
             />
           </View>
         ))}
