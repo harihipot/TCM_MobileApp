@@ -1,0 +1,56 @@
+export const strings = {
+  login: {
+    username: "Username",
+    password: "Password",
+    changeText: "Change Password",
+    currentPassword: "Current Password",
+    newPassword: "New Password",
+    confirmNewPassword: "Confirm New Password",
+    loginText: "Login",
+    forgotPassword: "Forgot Password?",
+    logoutConfirmation: "Are you sure you want to logout?",
+    changePasswordSuccess: "Password changed successfully, please relogin",
+  },
+  alert: {
+    error: "Error",
+    success: "Success",
+    warning: "Warning",
+    info: "Info",
+    ok: "OK",
+    cancel: "Cancel",
+  },
+  homeMenu: {
+    showQr: "Show QR",
+    applyLeave: "Apply Leave",
+    viewBill: "View Bill",
+    leaveHistory: "Leave History",
+    scanQr: "Scan QR",
+    todayLeaves: `Today's Leaves`,
+    submitAttendance: "Submit Final attendance",
+    collection: "Monthly Collection",
+  },
+  headers: {
+    home: "Home",
+    changePassword: "Change Password",
+    billingHistory: "Billing History",
+    logout: "Logout",
+    scanQr: "Scan QR",
+    showQr: "Show QR",
+    applyLeave: "Apply Leave",
+    leaveHistory: "Leave History",
+    leaveDetails: "Leave Deatils",
+    viewBill: "View Bill",
+  },
+  leave: {
+    toDate: "To Date",
+    fromDate: "From Date",
+    applyLeaveSuccess: "Leaves submited successfulluy",
+  },
+  bill:{
+    transId:"Transaction ID"
+  },
+  common: {
+    submit: "Submit",
+    viewBillDisableText: "View bill enabled every month 1 to 5",
+  },
+};
