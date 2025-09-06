@@ -3,6 +3,7 @@ import {
   applyLeave,
   applyLeaveFailure,
   applyLeaveSuccess,
+  cancelLeave,
   leaveHistory,
   leaveHistoryFailure,
   leaveHistorySuccuss,
@@ -34,9 +35,24 @@ function* leaveHistorySaga(action: any): Generator<any, void, any> {
   }
 }
 
+function* cancelLeaveSaga(action: any): Generator<any, void, any> {
+  try {
+    const { userId, fromDate, toDate } = action.payload;
+    const response = yield call(leaveHitoryService, userId, fromDate, toDate);
+    if (response.status === 200) {
+      yield put(leaveHistorySuccuss(response.data));
+    }
+  } catch (error: any) {
+    console.log("Error in leaveHistorySaga:", error);
+    
+    yield put(leaveHistoryFailure(error.message));
+  }
+}
+
 function* leaveSaga() {
   yield takeLatest(applyLeave.type, applyLeaveSaga);
   yield takeLatest(leaveHistory.type, leaveHistorySaga);
+  yield takeLatest(cancelLeave.type, cancelLeaveSaga);
 }
 
 export default leaveSaga;

@@ -16,7 +16,7 @@ import { useDispatch, useSelector } from "react-redux";
 const LoginScreen = (props: any) => {
   const dispatch = useDispatch();
   const [mobileNumber, setMobileNumber] = useState("8072472967");
-  const [password, setpassword] = useState("b326622c4d8eb221");
+  const [password, setpassword] = useState("6daf282af850ef7b");
   const [mobileNumberError, setMobileNumberError] = useState<string | null>(
     null
   );
@@ -82,6 +82,8 @@ const LoginScreen = (props: any) => {
 
   const loginClicked = () => {
     if (validateInputs()) {
+      console.log("Logging in with:", { mobileNumber, password });
+      
       dispatch(loginUser({ mobileNumber, password }));
     }
   };

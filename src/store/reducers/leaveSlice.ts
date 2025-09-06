@@ -4,6 +4,7 @@ const initialState = {
   isLoading: false,
   applyLeaveResponse: null,
   leaveHistoryResp: null,
+  cancelLeaveResponse: null,
 };
 
 const leaveSlice = createSlice({
@@ -34,10 +35,19 @@ const leaveSlice = createSlice({
       state.leaveHistoryResp = action.payload;
     },
     leaveHistoryFailure(state, action) {
-      console.log("Error in slice:", action.payload);
-      
       state.isLoading = false;
       state.leaveHistoryResp = action.payload;
+    },
+    cancelLeave(state, action) {
+      state.isLoading = true;
+    },
+    cancelLeaveSuccess(state, action) {
+      state.isLoading = false;
+      state.cancelLeaveResponse = action.payload;
+    },
+    cancelLeaveFailure(state, action) {
+      state.isLoading = false;
+      state.cancelLeaveResponse = action.payload;
     },
   },
 });
@@ -49,6 +59,9 @@ export const {
   resetApplyLeave,
   leaveHistory,
   leaveHistoryFailure,
-  leaveHistorySuccuss
+  leaveHistorySuccuss,
+  cancelLeave,
+  cancelLeaveFailure,
+  cancelLeaveSuccess,
 } = leaveSlice.actions;
 export default leaveSlice.reducer;

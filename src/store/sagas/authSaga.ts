@@ -18,8 +18,8 @@ import {
 
 function* loginSaga(action: any): Generator<any, void, any> {
   try {
-    const { username, password } = action.payload;
-    const response = yield call(authenticateUserService, username, password);
+    const { mobileNumber, password } = action.payload;
+    const response = yield call(authenticateUserService, mobileNumber, password);
     if (response.status === 200) {
       yield put(loginUserSuccess(response.data));
     }

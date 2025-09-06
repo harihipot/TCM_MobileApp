@@ -3,11 +3,11 @@ import { apiCall } from "./Api";
 
 // Example: API function to authenticate user
 export const authenticateUserService = async (
-  username: string,
+  mobileNumber: string,
   password: string
 ) => {
   return apiCall("POST", APIConstants.ENDPOINTS.LOGIN_USER, {
-    mobile: username,
+    mobile: mobileNumber,
     password: password,
   });
 };

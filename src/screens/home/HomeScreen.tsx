@@ -8,7 +8,6 @@ import { strings } from "@/src/constants/AppStrings";
 
 const HomeScreen = (props: any) => {
   const user = useSelector((state: any) => state.auth.user);
-  console.log("user in home screen", user);
   
   const menu = getDashboardMenu(user?.role?.name);
 

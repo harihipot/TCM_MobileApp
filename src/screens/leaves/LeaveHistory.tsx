@@ -1,5 +1,4 @@
 import { MaterialIcons } from "@expo/vector-icons";
-import { Button } from "@/src/components/Button";
 import EmptyView from "@/src/components/EmptyView";
 import FabButton from "@/src/components/FabButton";
 import { Loader } from "@/src/components/Loader";
@@ -16,6 +15,9 @@ import {
   View,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
+import Checkbox from "@/src/components/Checkbox";
+import { Button } from "@/src/components/Button";
+import { strings } from "@/src/constants/AppStrings";
 
 type leaveData = {
   id: number;
@@ -27,6 +29,8 @@ const LeaveHistory = (props: any) => {
   const dispatch = useDispatch();
   const [leaveData, setLeaveData] = useState<leaveData[]>([]); // Placeholder for billing history data
   const [refreshing, setRefreshing] = useState(false);
+  const [isMulipleSelect, setIsMulipleSelect] = useState(false);
+  const [selectedLeaves, setSelectedLeaves] = useState<number[]>([]);
   const user = useSelector((state: any) => state.auth.user);
   const leavesResponse = useSelector((state: any) => state.leave);
   const { isLoading, leaveHistoryResp } = leavesResponse;
@@ -60,7 +64,17 @@ const LeaveHistory = (props: any) => {
 
   const cancelLeave = (leaveId: number) => {
     // Implement cancel leave logic here
+
     console.log("Cancel leave with ID:", leaveId);
+  };
+
+  const onLongPress = (item: any) => {
+    setIsMulipleSelect(true);
+    setSelectedLeaves((prev) =>
+      prev.includes(item.id)
+        ? prev.filter((id) => id !== item.id)
+        : [...prev, item.id]
+    );
   };
 
   const onRefresh = () => {
@@ -68,28 +82,60 @@ const LeaveHistory = (props: any) => {
     fetchLeaveHistory();
   };
 
-  const renderLeaveItem = ({ item }: { item: leaveData }) => (
-    <Pressable onLongPress={() => cancelLeave(item.id)}>
-      <View style={styles.itemContainer}>
-        <View>
-          <Text style={styles.labelStyle}>Date:</Text>
-          <Text style={styles.dateStyle}>{item.date}</Text>
+  const onCheckboxChange = (item: any) => {
+    setSelectedLeaves((prev) =>
+      prev.includes(item.id)
+        ? prev.filter((id) => id !== item.id)
+        : [...prev, item.id]
+    );
+  };
+
+  // Automatically exit multiple select mode when no items are selected
+  useEffect(() => {
+    if (isMulipleSelect && selectedLeaves.length === 0) {
+      setIsMulipleSelect(false);
+    }
+  }, [selectedLeaves, isMulipleSelect]);
+
+  const isSelected = (id: number) => selectedLeaves.includes(id);
+
+  const onMultipleLeaveCancel = () => {
+    console.log("s", selectedLeaves);
+
+    // cancelLeave(0);
+    // setIsMulipleSelect(false);
+    // setSelectedLeaves([]);
+  };
+  const renderLeaveItem = ({ item }: { item: leaveData }) => {
+    return (
+      <Pressable onLongPress={() => onLongPress(item)}>
+        <View style={styles.itemContainer}>
+          {item.isActive && isMulipleSelect && selectedLeaves.length > 0 && (
+            <Checkbox
+              checked={isSelected(item.id)}
+              onChange={() => onCheckboxChange(item)}
+            />
+          )}
+          <View style={isMulipleSelect ? { flex: 1, marginLeft: 30 } : {}}>
+            <Text style={styles.labelStyle}>{strings.leave.date}</Text>
+            <Text style={styles.dateStyle}>{item.date}</Text>
+          </View>
+          <Text style={styles.labelStyle}>
+            {item.isActive ? strings.leave.active : strings.leave.cancelled}
+          </Text>
+          {!isMulipleSelect && (
+            <Pressable
+              style={styles.cancelButton}
+              onPress={() => cancelLeave(item.id)}
+            >
+              <MaterialIcons name="cancel" size={22} color={Colors.primary} />
+              <Text style={styles.cancelText}>{strings.alert.cancel}</Text>
+            </Pressable>
+          )}
         </View>
-        <Text style={styles.labelStyle}>
-          {item.isActive ? "Active" : "Cancelled"}
-        </Text>
-        {item.isActive && (
-          <Pressable
-            style={styles.cancelButton}
-            onPress={() => cancelLeave(item.id)}
-          >
-            <MaterialIcons name="cancel" size={22} color={Colors.primary} />
-            <Text style={styles.cancelText}>Cancel</Text>
-          </Pressable>
-        )}
-      </View>
-    </Pressable>
-  );
+      </Pressable>
+    );
+  };
 
   return (
     <View style={styles.container}>
@@ -97,6 +143,13 @@ const LeaveHistory = (props: any) => {
         <Loader />
       ) : (
         <>
+          {isMulipleSelect && selectedLeaves.length > 0 && (
+            <Button
+              onClick={onMultipleLeaveCancel}
+              label={`${strings.alert.cancel} (${selectedLeaves.length})`}
+              buttonStyle={styles.cancelMultiple}
+            />
+          )}
           <FlatList
             data={leaveData}
             showsVerticalScrollIndicator={false}
@@ -119,6 +172,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 20,
+    backgroundColor: Colors.white,
   },
   itemContainer: {
     borderColor: Colors.primary,
@@ -154,6 +208,12 @@ const styles = StyleSheet.create({
   dateStyle: {
     fontSize: 16,
     color: Colors.textColor,
+  },
+  cancelMultiple: {
+    backgroundColor: Colors.primary,
+    margin: 16,
+    alignSelf: "flex-end",
+    paddingHorizontal: 2,
   },
 });
 

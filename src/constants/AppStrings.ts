@@ -50,6 +50,9 @@ export const strings = {
     toDate: "To Date",
     fromDate: "From Date",
     applyLeaveSuccess: "Leaves submited successfulluy",
+    cancelled:'Cancelled',
+    active:'Active',
+    date: "Date:",
   },
   bill: {
     transId: "Transaction ID",

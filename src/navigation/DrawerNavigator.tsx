@@ -6,7 +6,7 @@ import HomeScreen from "../screens/home/HomeScreen";
 import { Colors } from "@/src/constants/Colors";
 import { createStackNavigator } from "@react-navigation/stack";
 import ApplyLeaves from "../screens/leaves/ApplyLeaves";
-import LeaveHistory from "../screens/leaves/leaveHistory/LeaveHistory";
+import LeaveHistory from "../screens/leaves/LeaveHistory";
 import ScanQRScreen from "../screens/qr/ScanQRScreen";
 import ShowQRScreen from "../screens/qr/ShowQRScreen";
 import ViewBills from "../screens/bills/ViewBills";
