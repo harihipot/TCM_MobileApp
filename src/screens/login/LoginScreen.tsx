@@ -4,17 +4,26 @@ import { Loader } from "@/src/components/Loader";
 import { TextInputComponent } from "@/src/components/TextInputView";
 import { strings } from "@/src/constants/AppStrings";
 import { Colors } from "@/src/constants/Colors";
-import { forgotPassword, loginUser } from "@/src/store/reducers/authSlice";
+import {
+  forgotPassword,
+  loginUser,
+  resetAuth,
+} from "@/src/store/reducers/authSlice";
 import { resetAuthToken, storeAuthToken } from "@/src/utils/storageUtils";
 import { useEffect, useState } from "react";
-import { Image, SafeAreaView, StyleSheet, Text } from "react-native";
+import { Alert, Image, SafeAreaView, StyleSheet, Text } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 const LoginScreen = (props: any) => {
   const dispatch = useDispatch();
-  const [username, setUsername] = useState("8072472967");
+  const [mobileNumber, setMobileNumber] = useState("8072472967");
   const [password, setpassword] = useState("b326622c4d8eb221");
+  const [mobileNumberError, setMobileNumberError] = useState<string | null>(
+    null
+  );
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+
   const loginResponse = useSelector((state: any) => state.auth);
-  const { isLoading } = loginResponse;
+  const { isLoading, forgotPasswordResp } = loginResponse;
 
   useEffect(() => {
     resetAuthToken();
@@ -25,25 +34,64 @@ const LoginScreen = (props: any) => {
       const { user } = loginResponse;
       if (user && user.token && user.token !== "") {
         storeAuthToken(user.token);
-        props.navigation.navigate("drawer");
+        props.navigation.replace("drawer");
       }
     }
   }, [loginResponse]);
 
+  useEffect(() => {
+    console.log("forgotPasswordResp", forgotPasswordResp);
+
+    if (forgotPasswordResp) {
+      Alert.alert(
+        strings.login.forgotPassword,
+        strings.login.passwordResetSuccess,
+        [{ text: "OK", onPress: () => dispatch(resetAuth()) }]
+      );
+    }
+  }, [forgotPasswordResp]);
+
   const usernameChange = (text: string) => {
-    setUsername(text);
+    setMobileNumber(text);
+    setMobileNumberError(null);
   };
 
   const passwordChange = (text: string) => {
     setpassword(text);
+    setPasswordError(null);
+  };
+
+  const validateInputs = (): boolean => {
+    let valid = true; // Assume inputs are valid initially
+
+    // Validate mobile number
+    if (mobileNumber.trim() === "") {
+      setMobileNumberError(strings.login.mobileRequired);
+      valid = false;
+    } else if (mobileNumber.length < 10) {
+      setMobileNumberError(strings.login.invalidMobile);
+      valid = false;
+    }
+    // Validate password
+    if (password.trim() === "") {
+      setPasswordError(strings.login.passwordRequired);
+      valid = false;
+    }
+    return valid;
   };
 
   const loginClicked = () => {
-    dispatch(loginUser({ username, password }));
+    if (validateInputs()) {
+      dispatch(loginUser({ mobileNumber, password }));
+    }
   };
 
   const forgotPasswordClicked = () => {
-    dispatch(forgotPassword({ username }));
+    if (mobileNumber.trim() === "" && mobileNumber.length < 10) {
+      setMobileNumberError(strings.login.invalidMobile);
+      return;
+    }
+    dispatch(forgotPassword({ mobileNumber }));
   };
 
   return (
@@ -54,16 +102,18 @@ const LoginScreen = (props: any) => {
         source={roundIcon}
       />
       <TextInputComponent
-        placeholderText={strings.login.username}
-        textValue={username}
+        placeholderText={strings.login.mobile}
+        textValue={mobileNumber}
         onChange={usernameChange}
         containerStyleProp={styles.containerStyleProp}
+        errorMessage={mobileNumberError}
       />
       <TextInputComponent
         placeholderText={strings.login.password}
         textValue={password}
         onChange={passwordChange}
         containerStyleProp={styles.containerStyleProp}
+        errorMessage={passwordError}
       />
       <Text style={styles.forgotTextStyle} onPress={forgotPasswordClicked}>
         {strings.login.forgotPassword}
@@ -85,8 +135,8 @@ const styles = StyleSheet.create({
   },
   imageStyle: {
     alignSelf: "center",
-    width: 180,
-    height: 180,
+    width: 160,
+    height: 160,
     marginTop: "30%",
   },
   loginButtonStyle: {
@@ -100,9 +150,9 @@ const styles = StyleSheet.create({
     alignSelf: "flex-end",
     textDecorationLine: "underline",
   },
-  containerStyleProp:{
-    marginTop:25
-  }
+  containerStyleProp: {
+    marginTop: 25,
+  },
 });
 
 export default LoginScreen;

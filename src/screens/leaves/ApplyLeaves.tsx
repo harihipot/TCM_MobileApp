@@ -22,7 +22,7 @@ const ApplyLeaves = () => {
   const [showCalender, setShowCalender] = useState(false);
 
   const minDate = moment().add(1, "days").format("YYYY-MM-DD").toString();
-  const maxDate = moment().add(60, "days").format("YYYY-MM-DD").toString();
+  const maxDate = moment().add(30, "days").format("YYYY-MM-DD").toString();
   const leavesResponse = useSelector((state: any) => state.leave);
   const { isLoading, applyLeaveResponse } = leavesResponse;
 
@@ -51,6 +51,7 @@ const ApplyLeaves = () => {
   const clearFunc = () => {
     setFromDate("");
     setToDate("");
+    setSelectedDays("");
     dispatch(resetApplyLeave());
   };
 

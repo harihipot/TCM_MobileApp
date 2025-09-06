@@ -30,8 +30,10 @@ function* loginSaga(action: any): Generator<any, void, any> {
 
 function* forgotPasswordSaga(action: any): Generator<any, void, any> {
   try {
-    const { userId } = action.payload;
-    const response = yield call(forgotPasswordService, userId);
+    const { mobile } = action.payload;
+    const response = yield call(forgotPasswordService, mobile);
+    console.log("forgotPasswordSaga",response);
+    
     if (response.status === 200) {
       yield put(forgotPasswordSuccuss(response.data));
     }

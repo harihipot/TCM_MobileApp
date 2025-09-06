@@ -12,9 +12,9 @@ export const authenticateUserService = async (
   });
 };
 
-export const forgotPasswordService = async (userId: string) => {
+export const forgotPasswordService = async (mobileNumber: string) => {
   return apiCall("POST", APIConstants.ENDPOINTS.FORGOT_PASSWORD, {
-    userId,
+    mobile: mobileNumber,
   });
 };
 

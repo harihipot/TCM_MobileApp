@@ -47,7 +47,7 @@ export const TextInputComponent = (props: TextInputViewProps) => {
   } = props;
   return (
     <>
-      <View style={[styles.containerStyle,containerStyleProp]}>
+      <View style={[styles.containerStyle, containerStyleProp]}>
         <View style={styles.textImageContainerStyle}>
           <TextInput
             editable={isEditable}
@@ -95,6 +95,7 @@ const styles = StyleSheet.create({
     borderColor: Colors.primary,
     borderRadius: 10,
     borderWidth: 1,
+    marginTop: 20,
   },
   inputStyle: {
     flex: 1,
@@ -109,7 +110,7 @@ const styles = StyleSheet.create({
     paddingTop: 4,
     paddingHorizontal: 10,
     alignSelf: "flex-start",
-    marginLeft: 40,
+    marginLeft: 36,
   },
   imageContainerStyle: {
     width: 30,

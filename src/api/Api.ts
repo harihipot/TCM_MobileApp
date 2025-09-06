@@ -15,10 +15,10 @@ export const apiCall = async <T = any>(
       data,
       ...config,
     });
-    console.log("API response:", response);
+    // console.log("API response:", response);
     return response;
   } catch (error: any) {
-    console.log("API call error:", error);
+    // console.log("API call error:", error);
     throw new Error(
       error?.response?.data?.message || error.message || "API call failed"
     );

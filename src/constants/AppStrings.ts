@@ -1,6 +1,6 @@
 export const strings = {
   login: {
-    username: "Username",
+    mobile: "Mobile Number",
     password: "Password",
     changeText: "Change Password",
     currentPassword: "Current Password",
@@ -10,6 +10,11 @@ export const strings = {
     forgotPassword: "Forgot Password?",
     logoutConfirmation: "Are you sure you want to logout?",
     changePasswordSuccess: "Password changed successfully, please relogin",
+    mobileRequired: "Mobile number is required",
+    passwordRequired: "Password is required",
+    invalidMobile: "Please enter a valid mobile number",
+    enterPassword: "Please enter password",
+    passwordResetSuccess: "Password reset successfully, please check your mail",
   },
   alert: {
     error: "Error",
@@ -46,8 +51,8 @@ export const strings = {
     fromDate: "From Date",
     applyLeaveSuccess: "Leaves submited successfulluy",
   },
-  bill:{
-    transId:"Transaction ID"
+  bill: {
+    transId: "Transaction ID",
   },
   common: {
     submit: "Submit",

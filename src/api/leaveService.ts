@@ -6,6 +6,11 @@ export const applyLeaveService = async (leaveOj: any) => {
   return apiCall("POST", APIConstants.ENDPOINTS.APPLY_LEAVE, leaveOj);
 };
 
-export const leaveHitoryService = async () => {
-  return apiCall("GET", APIConstants.ENDPOINTS.GET_LEAVE_HISTORY);
+export const leaveHitoryService = async (
+  userId: string,
+  fromDate: string,
+  Todate: string
+) => {
+  const url = `${APIConstants.ENDPOINTS.GET_LEAVE_HISTORY}?userId=${userId}&fromDate=${fromDate}&toDate=${Todate}`;
+  return apiCall("GET", url);
 };

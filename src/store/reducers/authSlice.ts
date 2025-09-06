@@ -50,6 +50,13 @@ const authSlice = createSlice({
       state.isLoading = false;
       state.changePasswordResp = action.payload;
     },
+    resetAuth(state) {
+      state.user = null;
+      state.error = null;
+      state.isLoading = false;
+      state.forgotPasswordResp = null;
+      state.changePasswordResp = null; 
+    }
   },
 });
 
@@ -63,6 +70,7 @@ export const {
   changePassword,
   changePasswordSuccuss,
   changePasswordFailure,
+  resetAuth,
   logout,
 } = authSlice.actions;
 export default authSlice.reducer;

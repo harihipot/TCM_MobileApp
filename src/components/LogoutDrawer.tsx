@@ -9,13 +9,20 @@ import {
 import { Alert, StyleSheet } from "react-native";
 import { useDispatch } from "react-redux";
 import { resetAuthToken } from "../utils/storageUtils";
+import { persistor } from "@/src/store";
 
 export const LogoutDrawer = (props: any) => {
   const dispatch = useDispatch();
-  const performLogout = () => {
+  const performLogout = async () => {
+    resetAuthToken();
     dispatch(logout());
-    resetAuthToken()
-    props.navigation.navigate('login')
+    await persistor.purge(); // Clear persisted redux state
+
+    // Instantly reset navigation to login before clearing redux state
+    props.navigation.reset({
+      index: 0,
+      routes: [{ name: "login" }],
+    });
   };
 
   const handleLogout = () => {

@@ -3,6 +3,7 @@ import { Button } from "@/src/components/Button";
 import { Loader } from "@/src/components/Loader";
 import { TextInputComponent } from "@/src/components/TextInputView";
 import { strings } from "@/src/constants/AppStrings";
+import { persistor } from "@/src/store";
 import { logout } from "@/src/store/reducers/authSlice";
 import { resetAuthToken } from "@/src/utils/storageUtils";
 import { useEffect, useState } from "react";
@@ -24,10 +25,16 @@ const ChangePassword = (props: any) => {
   const response = useSelector((state: any) => state.auth);
   const { isLoading } = response;
 
-  const performLogout = () => {
-    dispatch(logout());
+  const performLogout = async () => {
     resetAuthToken();
-    props.navigation.navigate("login");
+    dispatch(logout());
+    await persistor.purge(); // Clear persisted redux state
+
+    // Instantly reset navigation to login before clearing redux state
+    props.navigation.reset({
+      index: 0,
+      routes: [{ name: "login" }],
+    });
   };
 
   useEffect(() => {

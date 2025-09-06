@@ -34,6 +34,8 @@ const leaveSlice = createSlice({
       state.leaveHistoryResp = action.payload;
     },
     leaveHistoryFailure(state, action) {
+      console.log("Error in slice:", action.payload);
+      
       state.isLoading = false;
       state.leaveHistoryResp = action.payload;
     },
