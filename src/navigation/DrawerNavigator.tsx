@@ -71,11 +71,6 @@ const HomeStack = () => {
         options={setOptions(strings.headers.leaveHistory)}
       />
       <Stack.Screen
-        name={"leaveDetails"}
-        component={LeaveHistory}
-        options={setOptions(strings.headers.leaveDetails)}
-      />
-      <Stack.Screen
         name={"viewBill"}
         component={ViewBills}
         options={setOptions(strings.headers.viewBill)}

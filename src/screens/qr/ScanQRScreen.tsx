@@ -1,18 +1,16 @@
 import { Button } from "@/src/components/Button";
 import { Colors } from "@/src/constants/Colors";
 import { CameraView, useCameraPermissions } from "expo-camera";
-import { useEffect } from "react";
+import React, { useState, useRef } from "react";
 import { StyleSheet, Text, View } from "react-native";
+import Snackbar from "react-native-snackbar";
+import { strings } from "@/src/constants/AppStrings";
 
 const ScanQRScreen = (props: any) => {
-  useEffect(() => {
-    props.navigation.setOptions({
-      headerTitle: () => <Text testID="TxtScreenTitle">Scan QR</Text>,
-    });
-  }, []);
-
-  
   const [permission, requestPermission] = useCameraPermissions();
+  const [scanned, setScanned] = useState(false);
+  const insertMealEntryRef = useRef<any>(null);
+
   if (!permission) {
     // Camera permissions are still loading.
     return <View />;
@@ -23,13 +21,61 @@ const ScanQRScreen = (props: any) => {
     return (
       <View style={styles.container}>
         <Text style={styles.message}>
-          We need your permission to show the camera
+          {strings.qr.needPermission}
         </Text>
-        <Button onClick={requestPermission} label="grant permission" />
+  <Button onClick={requestPermission} label={strings.qr.grantPermission} />
       </View>
     );
   }
-  const handleBarCodeScanned = () => {};
+  // Example QR: "userID|mealD" (customize parsing as needed)
+  const handleBarCodeScanned = React.useCallback(
+    async (result: { data: string }) => {
+      if (scanned) return;
+      setScanned(true);
+      // Defensive: trim and validate
+      const raw = result.data?.trim?.() || "";
+      const [userID, mealD] = raw.split("|").map((v) => v?.trim?.() || "");
+      if (!userID || !mealD) {
+        Snackbar.show({
+          text: strings.qr.invalidFormat,
+          duration: Snackbar.LENGTH_SHORT,
+          backgroundColor: Colors.errorRed,
+        });
+        setScanned(false);
+        return;
+      }
+      try {
+        // Import only once for performance
+        if (!insertMealEntryRef.current) {
+          const mod = await import("@/src/utils/databaseUtils");
+          insertMealEntryRef.current = mod.insertMealEntry;
+        }
+        await insertMealEntryRef.current(userID, mealD);
+        Snackbar.show({
+          text: strings.qr.saved,
+          duration: Snackbar.LENGTH_SHORT,
+          backgroundColor: Colors.primary,
+        });
+        setTimeout(() => setScanned(false), 1200);
+      } catch (err: any) {
+        if (err.message && err.message.includes("Duplicate entry")) {
+          Snackbar.show({
+            text: strings.qr.duplicate,
+            duration: Snackbar.LENGTH_SHORT,
+            backgroundColor: Colors.errorRed,
+          });
+        } else {
+          Snackbar.show({
+            text: err.message || strings.qr.failed,
+            duration: Snackbar.LENGTH_SHORT,
+            backgroundColor: Colors.errorRed,
+          });
+        }
+        setScanned(false);
+      }
+    },
+    [scanned]
+  );
 
   return (
     <View style={styles.container}>
@@ -39,11 +85,13 @@ const ScanQRScreen = (props: any) => {
           barcodeScannerSettings={{
             barcodeTypes: ["qr"],
           }}
-          onBarcodeScanned={handleBarCodeScanned}
+          onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
           facing={"back"}
         />
       </View>
-      <Text style={styles.text}>Scan QR code to mark attendance</Text>
+      <Text style={styles.text}>
+        {scanned ? "Processing..." : "Scan QR code to mark attendance"}
+      </Text>
     </View>
   );
 };

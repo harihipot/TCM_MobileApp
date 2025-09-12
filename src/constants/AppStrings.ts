@@ -61,4 +61,32 @@ export const strings = {
     submit: "Submit",
     viewBillDisableText: "View bill enabled every month 1 to 5",
   },
+  qr: {
+    processing: "Processing...",
+    scanPrompt: "Scan QR code to mark attendance",
+    invalidFormat: "Invalid QR code format",
+    saved: "Meal entry saved!",
+    duplicate: "Duplicate entry: This meal has already been recorded.",
+    failed: "Failed to save meal entry",
+    grantPermission: "Grant permission",
+    needPermission: "We need your permission to show the camera",
+  },
+  bills: {
+    hi: "Hi",
+    transactionId: "Transaction ID",
+    noHistory: "No billing history available.",
+    daysPresent: "Days Present",
+    daysAbsent: "Days Absent",
+    transactionImage: "Transaction Image",
+    uploadImage: "Upload Image",
+  },
+  leaves: {
+    noLeaves: "No leaves available.",
+    chosenDays: (days: string) => `You have chosen ${days} days leaves`,
+  },
+  errors: {
+    passwordsDoNotMatch: "Passwords do not match",
+    passwordCriteria: "Password does not meet the criteria",
+    failedInitDB: "Failed to initialize local DB",
+  },
 };

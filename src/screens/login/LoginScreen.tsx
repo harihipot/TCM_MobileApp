@@ -10,6 +10,7 @@ import {
   resetAuth,
 } from "@/src/store/reducers/authSlice";
 import { resetAuthToken, storeAuthToken } from "@/src/utils/storageUtils";
+import React from "react";
 import { useEffect, useState } from "react";
 import { Alert, Image, SafeAreaView, StyleSheet, Text } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
@@ -83,7 +84,7 @@ const LoginScreen = (props: any) => {
   const loginClicked = () => {
     if (validateInputs()) {
       console.log("Logging in with:", { mobileNumber, password });
-      
+
       dispatch(loginUser({ mobileNumber, password }));
     }
   };

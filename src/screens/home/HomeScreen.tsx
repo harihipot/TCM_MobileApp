@@ -1,3 +1,4 @@
+import React, { useEffect } from "react";
 import { Card } from "@/src/components/Card";
 import { getDashboardMenu } from "../../utils/commonUtils";
 import { SafeAreaView, StyleSheet, View } from "react-native";
@@ -5,10 +6,23 @@ import { useSelector } from "react-redux";
 import Snackbar from "react-native-snackbar";
 import { Colors } from "@/src/constants/Colors";
 import { strings } from "@/src/constants/AppStrings";
+import { init as initDB } from "@/src/utils/databaseUtils";
 
 const HomeScreen = (props: any) => {
   const user = useSelector((state: any) => state.auth.user);
-  
+
+  useEffect(() => {
+    if (user?.role?.name === "admin") {
+      initDB().catch((err) => {
+        Snackbar.show({
+          text: err.message || strings.errors.failedInitDB,
+          duration: Snackbar.LENGTH_SHORT,
+          backgroundColor: Colors.errorRed,
+        });
+      });
+    }
+  }, [user]);
+
   const menu = getDashboardMenu(user?.role?.name);
 
   const cardClick = (cardItem: any) => {
