@@ -5,7 +5,7 @@ const _store = async (key: string, data: any) => {
   try {
     return await AsyncStorage.setItem(key, data);
   } catch (error) {
-    // Error saving data
+    console.error(error);
     return null;
   }
 };
@@ -13,13 +13,11 @@ const _store = async (key: string, data: any) => {
 const _get = async (key: string) => {
   try {
     //This was throwing error after plugin upgrade- RN UPGRADE
-    // data = await AsyncStorage.getItem(key, '');
     return AsyncStorage.getItem(key, (data) => {
       return data;
     });
-    //return data;
   } catch (error) {
-    // Log Error
+    console.error(error);
     return null;
   }
 };
@@ -28,7 +26,7 @@ const _reset = async (key: string) => {
   let data = await _get(key);
   try {
     if (data) {
-      await AsyncStorage.setItem(key, '');
+      await AsyncStorage.setItem(key, "");
       return true;
     }
     return false;

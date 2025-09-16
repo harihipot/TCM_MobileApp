@@ -1,5 +1,6 @@
 import { roundIcon } from "@/assets/images";
-import { Colors } from "@/src/constants/Colors";
+import { Colors } from "@/src/constants";
+import React from "react";
 import { SafeAreaView, StyleSheet, Text } from "react-native";
 import QRCode from "react-native-qrcode-svg";
 import { useSelector } from "react-redux";

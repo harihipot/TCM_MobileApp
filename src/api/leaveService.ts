@@ -1,4 +1,4 @@
-import { APIConstants } from "../constants/APIConstants";
+import { APIConstants } from "@/src/constants";
 import { apiCall } from "./Api";
 
 // Example: API function to authenticate user
@@ -13,4 +13,8 @@ export const leaveHitoryService = async (
 ) => {
   const url = `${APIConstants.ENDPOINTS.GET_LEAVE_HISTORY}?userId=${userId}&fromDate=${fromDate}&toDate=${Todate}`;
   return apiCall("GET", url);
+};
+
+export const cancelLeaveService = async (leaveOj: any) => {
+  return apiCall("POST", APIConstants.ENDPOINTS.CANCEL_LEAVE, leaveOj);
 };

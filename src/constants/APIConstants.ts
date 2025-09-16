@@ -1,5 +1,3 @@
-import { CANCEL } from "redux-saga";
-
 export const APIConstants = {
   BASE_URL: "https://tmc-gmc.el.r.appspot.com", // Base URL for the API
   TIMEOUT: 10000, // Request timeout in milliseconds
@@ -14,7 +12,7 @@ export const APIConstants = {
     // API endpoints
     LOGIN_USER: "/api/gmc/auth/login",
     CHANGE_PASSWORD: "/api/gmc/auth/change-password",
-    FORGOT_PASSWORD:"/api/gmc/auth/forgot-password",
+    FORGOT_PASSWORD: "/api/gmc/auth/forgot-password",
     CREATE_USER: "/api/gmc/user",
     APPLY_LEAVE: "/api/gmc/leave/apply",
     GET_LEAVE_HISTORY: "api/gmc/leave",

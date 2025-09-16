@@ -1,5 +1,5 @@
 import axios from "axios";
-import { APIConstants } from "@/src/constants/APIConstants";
+import { APIConstants } from "@/src/constants";
 import { getAuthToken } from "../utils/storageUtils";
 
 const axiosInstance = axios.create({
@@ -26,7 +26,7 @@ axiosInstance.interceptors.request.use(
     // Dynamically set Authorization header if token exists
     try {
       const token = await getAuthToken();
-      if (token && token != "") {
+      if (token && token !== "") {
         if (config.headers) {
           config.headers["Authorization"] = `Bearer ${token}`;
         }

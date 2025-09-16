@@ -5,14 +5,17 @@ import {
   GestureResponderEvent,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-import { Colors } from "@/src/constants/Colors";
+import { Colors } from "@/src/constants";
 
 interface FabButtonProps {
   onPress: (event: GestureResponderEvent) => void;
   iconName?: keyof typeof MaterialIcons.glyphMap;
 }
 
-const FabButton: React.FC<FabButtonProps> = ({ onPress, iconName = "add" }) => {
+export const FabButton: React.FC<FabButtonProps> = ({
+  onPress,
+  iconName = "add",
+}) => {
   return (
     <TouchableOpacity
       style={[styles.container]}
@@ -42,5 +45,3 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
   },
 });
-
-export default FabButton;

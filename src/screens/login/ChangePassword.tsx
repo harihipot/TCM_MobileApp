@@ -1,12 +1,11 @@
 import { roundIcon } from "@/assets/images";
-import { Button } from "@/src/components/Button";
-import { Loader } from "@/src/components/Loader";
-import { TextInputComponent } from "@/src/components/TextInputView";
-import { strings } from "@/src/constants/AppStrings";
+import { Button, Loader, TextInputComponent } from "@/src/components";
+import { strings } from "@/src/constants";
 import { persistor } from "@/src/store";
-import { logout } from "@/src/store/reducers/authSlice";
+import { changePassword, logout } from "@/src/store/reducers/authSlice";
 import { resetAuthToken } from "@/src/utils/storageUtils";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+
 import { Alert, Image, KeyboardAvoidingView, StyleSheet } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -16,14 +15,33 @@ const passwordRegex =
 const ChangePassword = (props: any) => {
   const dispatch = useDispatch();
   const [currentPassword, setCurrentPassword] = useState("");
-  const [password, setpassword] = useState("");
+  const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [currentPasswordError, setCurrentPasswordError] = useState<
+    string | null
+  >(null);
   const [passwordError, setPasswordError] = useState<string | null>(null);
   const [confirmPasswordError, setConfirmPasswordError] = useState<
     string | null
   >(null);
-  const response = useSelector((state: any) => state.auth);
-  const { isLoading } = response;
+  const authState = useSelector((state: any) => state.auth);
+  const { isLoading, user } = authState;
+
+  // Refresh page when hamburger menu (drawer) is clicked and page is focused
+  // Reset all fields and errors
+  const resetFields = React.useCallback(() => {
+    setCurrentPassword("");
+    setPassword("");
+    setConfirmPassword("");
+    setCurrentPasswordError(null);
+    setPasswordError(null);
+    setConfirmPasswordError(null);
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = props.navigation.addListener("focus", resetFields);
+    return unsubscribe;
+  }, [props.navigation, resetFields]);
 
   const performLogout = async () => {
     resetAuthToken();
@@ -38,8 +56,8 @@ const ChangePassword = (props: any) => {
   };
 
   useEffect(() => {
-    if (response) {
-      const { changePasswordResp } = response;
+    if (authState) {
+      const { changePasswordResp } = authState;
       if (changePasswordResp)
         Alert.alert(
           strings.alert.success,
@@ -53,35 +71,63 @@ const ChangePassword = (props: any) => {
           { cancelable: false }
         );
     }
-  }, [response]);
+  }, [authState]);
+
+  // Generic field validation
+  const validatePassword = React.useCallback((value: string) => {
+    if (value.length < 8) return strings.login.passwordMinLength;
+    if (!passwordRegex.test(value)) return strings.login.passwordRegexError;
+    return null;
+  }, []);
 
   const currentPasswordChange = (text: string) => {
     setCurrentPassword(text);
-  };
-
-  const confirmPasswordChange = (text: string) => {
-    if (text.length > 0 && password !== text) {
-      setConfirmPasswordError("Passwords do not match");
-    } else {
-      setConfirmPasswordError(null);
-    }
-    setConfirmPassword(text);
+    setCurrentPasswordError(
+      text.length >= 8 ? null : strings.login.passwordMinLength
+    );
   };
 
   const passwordChange = (text: string) => {
-    const isValid = passwordRegex.test(password);
-    if (text.length > 0 && !isValid) {
-      setPasswordError("Password does not meet the criteria");
-    } else {
-      setPasswordError(null);
+    setPassword(text);
+    setPasswordError(validatePassword(text));
+    // Also update confirm password error if confirmPassword is set
+    if (confirmPassword) {
+      setConfirmPasswordError(
+        text === confirmPassword
+          ? validatePassword(confirmPassword)
+          : strings.login.passwordsDoNotMatch
+      );
     }
-    setpassword(text);
+  };
+
+  const confirmPasswordChange = (text: string) => {
+    setConfirmPassword(text);
+    setConfirmPasswordError(
+      text === password
+        ? validatePassword(text)
+        : strings.login.passwordsDoNotMatch
+    );
   };
 
   const onChangePasswordClicked = () => {
-    if (password === confirmPassword) {
-      // dispatch(changePassword({ password }));
-    }
+    const currentError =
+      currentPassword.length >= 8 ? null : strings.login.passwordMinLength;
+    const passwordErr = validatePassword(password);
+    const confirmErr =
+      password === confirmPassword
+        ? validatePassword(confirmPassword)
+        : strings.login.passwordsDoNotMatch;
+    setCurrentPasswordError(currentError);
+    setPasswordError(passwordErr);
+    setConfirmPasswordError(confirmErr);
+    if (currentError || passwordErr || confirmErr) return;
+    dispatch(
+      changePassword({
+        userId: user.id,
+        oldPassword: currentPassword,
+        confirmPassword: confirmPassword,
+      })
+    );
   };
 
   return (
@@ -95,6 +141,7 @@ const ChangePassword = (props: any) => {
         placeholderText={strings.login.currentPassword}
         textValue={currentPassword}
         onChange={currentPasswordChange}
+        errorMessage={currentPasswordError}
       />
       <TextInputComponent
         placeholderText={strings.login.newPassword}

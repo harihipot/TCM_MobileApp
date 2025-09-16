@@ -1,11 +1,10 @@
 import React, { useEffect } from "react";
-import { Card } from "@/src/components/Card";
+import { Card } from "@/src/components";
 import { getDashboardMenu } from "../../utils/commonUtils";
 import { SafeAreaView, StyleSheet, View } from "react-native";
 import { useSelector } from "react-redux";
 import Snackbar from "react-native-snackbar";
-import { Colors } from "@/src/constants/Colors";
-import { strings } from "@/src/constants/AppStrings";
+import { Colors, strings } from "@/src/constants";
 import { init as initDB } from "@/src/utils/databaseUtils";
 
 const HomeScreen = (props: any) => {

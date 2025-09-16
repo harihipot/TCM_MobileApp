@@ -1,4 +1,4 @@
-import { APIConstants } from "@/src/constants/APIConstants";
+import { APIConstants } from "@/src/constants";
 import { apiCall } from "./Api";
 
 // Example: API function to authenticate user

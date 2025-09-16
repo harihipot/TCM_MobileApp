@@ -1,4 +1,5 @@
-import { Colors } from "@/src/constants/Colors";
+import React from "react";
+import { Colors } from "@/src/constants";
 import {
   GestureResponderEvent,
   Pressable,

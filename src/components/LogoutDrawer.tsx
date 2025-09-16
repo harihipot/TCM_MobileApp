@@ -1,5 +1,5 @@
-import { strings } from "@/src/constants/AppStrings";
-import { Colors } from "@/src/constants/Colors";
+import React from "react";
+import { strings, Colors } from "@/src/constants";
 import { logout } from "@/src/store/reducers/authSlice";
 import {
   DrawerContentScrollView,

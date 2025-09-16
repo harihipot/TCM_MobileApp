@@ -1,5 +1,5 @@
 import { roundIcon } from "@/assets/images";
-import { Colors } from "@/src/constants/Colors";
+import { Colors } from "@/src/constants";
 import React from "react";
 import {
   Image,
@@ -28,6 +28,9 @@ type TextInputViewProps = {
   isEditable?: boolean;
   image?: any;
   imageOnClick?: () => void;
+  label?: string;
+  labelStyle?: any;
+  errorStyle?: any;
 };
 
 export const TextInputComponent = (props: TextInputViewProps) => {
@@ -44,9 +47,13 @@ export const TextInputComponent = (props: TextInputViewProps) => {
     image,
     containerStyleProp,
     imageOnClick,
+    label,
+    labelStyle,
+    errorStyle,
   } = props;
   return (
     <>
+      {label ? <Text style={[styles.label, labelStyle]}>{label}</Text> : null}
       <View style={[styles.containerStyle, containerStyleProp]}>
         <View style={styles.textImageContainerStyle}>
           <TextInput
@@ -83,13 +90,20 @@ export const TextInputComponent = (props: TextInputViewProps) => {
         </View>
       </View>
       {errorMessage && errorMessage !== "" && (
-        <Text style={styles.errorStyle}>{errorMessage}</Text>
+        <Text style={[styles.errorStyle, errorStyle]}>{errorMessage}</Text>
       )}
     </>
   );
 };
 
 const styles = StyleSheet.create({
+  label: {
+    fontSize: 16,
+    color: Colors.textColor,
+    fontWeight: "bold",
+    marginBottom: 4,
+    marginLeft: 4,
+  },
   containerStyle: {
     width: "80%",
     borderColor: Colors.primary,
@@ -105,7 +119,7 @@ const styles = StyleSheet.create({
     padding: 12,
   },
   errorStyle: {
-    fontSize: 12,
+    fontSize: 14,
     color: Colors.errorRed,
     paddingTop: 4,
     paddingHorizontal: 10,

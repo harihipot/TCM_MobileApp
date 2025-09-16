@@ -15,6 +15,10 @@ export const strings = {
     invalidMobile: "Please enter a valid mobile number",
     enterPassword: "Please enter password",
     passwordResetSuccess: "Password reset successfully, please check your mail",
+    passwordMinLength: "Password must be at least 8 characters",
+    passwordRegexError:
+      "Password must contain uppercase, lowercase, number, and special character",
+    passwordsDoNotMatch: "Passwords do not match",
   },
   alert: {
     error: "Error",
@@ -23,6 +27,7 @@ export const strings = {
     info: "Info",
     ok: "OK",
     cancel: "Cancel",
+    confirm: "Confirm",
   },
   homeMenu: {
     showQr: "Show QR",
@@ -50,8 +55,8 @@ export const strings = {
     toDate: "To Date",
     fromDate: "From Date",
     applyLeaveSuccess: "Leaves submited successfulluy",
-    cancelled:'Cancelled',
-    active:'Active',
+    cancelled: "Cancelled",
+    active: "Active",
     date: "Date:",
   },
   bill: {
@@ -78,7 +83,10 @@ export const strings = {
     daysPresent: "Days Present",
     daysAbsent: "Days Absent",
     transactionImage: "Transaction Image",
-    uploadImage: "Upload Image",
+    uploadImage: "Upload Transaction Image",
+    billAmount: "Bill Amount",
+    transactionIdRequired: "Transaction ID is required.",
+    billAmountTooltip: "This bill amount calculated like Day Present* 160",
   },
   leaves: {
     noLeaves: "No leaves available.",

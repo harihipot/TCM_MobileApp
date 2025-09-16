@@ -55,8 +55,8 @@ const authSlice = createSlice({
       state.error = null;
       state.isLoading = false;
       state.forgotPasswordResp = null;
-      state.changePasswordResp = null; 
-    }
+      state.changePasswordResp = null;
+    },
   },
 });
 

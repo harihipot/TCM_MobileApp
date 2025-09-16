@@ -1,9 +1,11 @@
+import React from "react";
+
 import {
   createDrawerNavigator,
   DrawerToggleButton,
 } from "@react-navigation/drawer";
 import HomeScreen from "../screens/home/HomeScreen";
-import { Colors } from "@/src/constants/Colors";
+import { Colors, strings } from "@/src/constants";
 import { createStackNavigator } from "@react-navigation/stack";
 import ApplyLeaves from "../screens/leaves/ApplyLeaves";
 import LeaveHistory from "../screens/leaves/LeaveHistory";
@@ -12,8 +14,8 @@ import ShowQRScreen from "../screens/qr/ShowQRScreen";
 import ViewBills from "../screens/bills/ViewBills";
 import BillingHistory from "../screens/bills/BillingHistory";
 import ChangePassword from "../screens/login/ChangePassword";
-import { LogoutDrawer } from "@/src/components/LogoutDrawer";
-import { strings } from "../constants/AppStrings";
+import { LogoutDrawer } from "@/src/components";
+
 import { useSelector } from "react-redux";
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();

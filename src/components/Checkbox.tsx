@@ -1,7 +1,7 @@
 import React from "react";
 import { Pressable, View, StyleSheet, Text } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-import { Colors } from "../constants/Colors";
+import { Colors } from "@/src/constants";
 
 interface CheckboxProps {
   checked: boolean;
@@ -10,7 +10,7 @@ interface CheckboxProps {
   disabled?: boolean;
 }
 
-const Checkbox: React.FC<CheckboxProps> = ({
+export const Checkbox: React.FC<CheckboxProps> = ({
   checked,
   onChange,
   label,
@@ -74,5 +74,3 @@ const styles = StyleSheet.create({
     color: "#aaa",
   },
 });
-
-export default Checkbox;

@@ -1,32 +1,15 @@
-import { Button } from "@/src/components/Button";
-import { Colors } from "@/src/constants/Colors";
+import { Button } from "@/src/components";
+import { Colors, strings } from "@/src/constants";
 import { CameraView, useCameraPermissions } from "expo-camera";
 import React, { useState, useRef } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import Snackbar from "react-native-snackbar";
-import { strings } from "@/src/constants/AppStrings";
 
 const ScanQRScreen = (props: any) => {
   const [permission, requestPermission] = useCameraPermissions();
   const [scanned, setScanned] = useState(false);
   const insertMealEntryRef = useRef<any>(null);
 
-  if (!permission) {
-    // Camera permissions are still loading.
-    return <View />;
-  }
-
-  if (!permission.granted) {
-    // Camera permissions are not granted yet.
-    return (
-      <View style={styles.container}>
-        <Text style={styles.message}>
-          {strings.qr.needPermission}
-        </Text>
-  <Button onClick={requestPermission} label={strings.qr.grantPermission} />
-      </View>
-    );
-  }
   // Example QR: "userID|mealD" (customize parsing as needed)
   const handleBarCodeScanned = React.useCallback(
     async (result: { data: string }) => {
@@ -76,6 +59,24 @@ const ScanQRScreen = (props: any) => {
     },
     [scanned]
   );
+
+  if (!permission) {
+    // Camera permissions are still loading.
+    return <View />;
+  }
+
+  if (!permission.granted) {
+    // Camera permissions are not granted yet.
+    return (
+      <View style={styles.container}>
+        <Text style={styles.message}>{strings.qr.needPermission}</Text>
+        <Button
+          onClick={requestPermission}
+          label={strings.qr.grantPermission}
+        />
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>

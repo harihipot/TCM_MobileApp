@@ -1,17 +1,14 @@
 import { roundIcon } from "@/assets/images";
-import { Button } from "@/src/components/Button";
-import { Loader } from "@/src/components/Loader";
-import { TextInputComponent } from "@/src/components/TextInputView";
-import { strings } from "@/src/constants/AppStrings";
-import { Colors } from "@/src/constants/Colors";
+import { Button, Loader, TextInputComponent } from "@/src/components";
+import { strings, Colors } from "@/src/constants";
 import {
   forgotPassword,
   loginUser,
   resetAuth,
 } from "@/src/store/reducers/authSlice";
 import { resetAuthToken, storeAuthToken } from "@/src/utils/storageUtils";
-import React from "react";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+
 import { Alert, Image, SafeAreaView, StyleSheet, Text } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 const LoginScreen = (props: any) => {
@@ -23,26 +20,24 @@ const LoginScreen = (props: any) => {
   );
   const [passwordError, setPasswordError] = useState<string | null>(null);
 
-  const loginResponse = useSelector((state: any) => state.auth);
-  const { isLoading, forgotPasswordResp } = loginResponse;
+  const authState = useSelector((state: any) => state.auth);
+  const { isLoading, forgotPasswordResp } = authState;
 
   useEffect(() => {
     resetAuthToken();
   }, []);
 
   useEffect(() => {
-    if (loginResponse) {
-      const { user } = loginResponse;
+    if (authState) {
+      const { user } = authState;
       if (user && user.token && user.token !== "") {
         storeAuthToken(user.token);
         props.navigation.replace("drawer");
       }
     }
-  }, [loginResponse]);
+  }, [authState]);
 
   useEffect(() => {
-    console.log("forgotPasswordResp", forgotPasswordResp);
-
     if (forgotPasswordResp) {
       Alert.alert(
         strings.login.forgotPassword,
@@ -83,8 +78,6 @@ const LoginScreen = (props: any) => {
 
   const loginClicked = () => {
     if (validateInputs()) {
-      console.log("Logging in with:", { mobileNumber, password });
-
       dispatch(loginUser({ mobileNumber, password }));
     }
   };

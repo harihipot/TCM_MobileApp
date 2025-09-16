@@ -49,6 +49,12 @@ const leaveSlice = createSlice({
       state.isLoading = false;
       state.cancelLeaveResponse = action.payload;
     },
+    resetLeaveState(state) {
+      state.isLoading = false;
+      state.applyLeaveResponse = null;
+      state.leaveHistoryResp = null;
+      state.cancelLeaveResponse = null;
+    },
   },
 });
 
@@ -63,5 +69,6 @@ export const {
   cancelLeave,
   cancelLeaveFailure,
   cancelLeaveSuccess,
+  resetLeaveState,
 } = leaveSlice.actions;
 export default leaveSlice.reducer;

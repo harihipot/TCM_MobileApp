@@ -1,5 +1,6 @@
-import EmptyView from "@/src/components/EmptyView";
-import { useState } from "react";
+import React, { useState } from "react";
+import { EmptyView } from "@/src/components";
+
 import { FlatList, StyleSheet, Text, View } from "react-native";
 
 type BillingData = {

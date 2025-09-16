@@ -19,7 +19,11 @@ import {
 function* loginSaga(action: any): Generator<any, void, any> {
   try {
     const { mobileNumber, password } = action.payload;
-    const response = yield call(authenticateUserService, mobileNumber, password);
+    const response = yield call(
+      authenticateUserService,
+      mobileNumber,
+      password
+    );
     if (response.status === 200) {
       yield put(loginUserSuccess(response.data));
     }
@@ -32,8 +36,6 @@ function* forgotPasswordSaga(action: any): Generator<any, void, any> {
   try {
     const { mobile } = action.payload;
     const response = yield call(forgotPasswordService, mobile);
-    console.log("forgotPasswordSaga",response);
-    
     if (response.status === 200) {
       yield put(forgotPasswordSuccuss(response.data));
     }
@@ -44,13 +46,14 @@ function* forgotPasswordSaga(action: any): Generator<any, void, any> {
 
 function* changePasswordSaga(action: any): Generator<any, void, any> {
   try {
-    const { password } = action.payload;
+    const { userId, oldPassword, confirmPassword } = action.payload;
 
     const response = yield call(changePasswordService, {
-      userId: "1",
-      oldPassword: password,
-      confirmPassword: password,
+      userId: userId,
+      oldPassword: oldPassword,
+      confirmPassword: confirmPassword,
     });
+
     if (response.status === 200) {
       yield put(changePasswordSuccuss(response.data));
     }

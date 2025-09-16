@@ -1,5 +1,5 @@
 import { roundIcon } from "@/assets/images";
-import { strings } from "@/src/constants/AppStrings";
+import { strings } from "@/src/constants";
 
 export const getDashboardMenu = (role: string) => {
   let menu: { label: string; image?: any; route?: any; isDisable: boolean }[] =

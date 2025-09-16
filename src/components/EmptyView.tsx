@@ -6,7 +6,7 @@ interface EmptyViewProps {
   message: string;
 }
 
-const EmptyView: React.FC<EmptyViewProps> = ({ message }) => (
+export const EmptyView: React.FC<EmptyViewProps> = ({ message }) => (
   <View style={styles.container}>
     <Image source={greyedLogo} style={styles.image} resizeMode="contain" />
     <Text style={styles.text}>{message}</Text>
@@ -30,5 +30,3 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 });
-
-export default EmptyView;

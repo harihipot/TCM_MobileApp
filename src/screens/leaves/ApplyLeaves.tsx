@@ -1,12 +1,10 @@
 import { roundIcon } from "@/assets/images";
-import { Button } from "@/src/components/Button";
-import { Loader } from "@/src/components/Loader";
-import { TextInputComponent } from "@/src/components/TextInputView";
-import { strings } from "@/src/constants/AppStrings";
-import { Colors } from "@/src/constants/Colors";
+import { Button, Loader, TextInputComponent } from "@/src/components";
+import { strings, Colors } from "@/src/constants";
 import { applyLeave, resetApplyLeave } from "@/src/store/reducers/leaveSlice";
 import moment from "moment";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
+
 import { Alert, StyleSheet, Text, View } from "react-native";
 import { Calendar } from "react-native-calendars";
 import { useDispatch, useSelector } from "react-redux";
@@ -23,8 +21,8 @@ const ApplyLeaves = () => {
 
   const minDate = moment().add(1, "days").format("YYYY-MM-DD").toString();
   const maxDate = moment().add(30, "days").format("YYYY-MM-DD").toString();
-  const leavesResponse = useSelector((state: any) => state.leave);
-  const { isLoading, applyLeaveResponse } = leavesResponse;
+  const leavesState = useSelector((state: any) => state.leave);
+  const { isLoading, applyLeaveResponse } = leavesState;
 
   const user = useSelector((state: any) => state.auth.user);
 
@@ -46,7 +44,7 @@ const ApplyLeaves = () => {
         { cancelable: true }
       );
     }
-  }, [leavesResponse]);
+  }, [leavesState]);
 
   const clearFunc = () => {
     setFromDate("");
@@ -69,7 +67,7 @@ const ApplyLeaves = () => {
   const openCanlendar = (isFrom: boolean) => {
     setShowCalender(true);
     setIsFrom(isFrom);
-    setSelectedDays('')
+    setSelectedDays("");
   };
 
   return (

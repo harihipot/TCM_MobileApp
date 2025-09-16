@@ -2,7 +2,7 @@ import { AxiosResponse } from "axios";
 import axiosInstance from "./axiosInstance";
 
 // Generic API call function
-export const apiCall = async <T = any>(
+export const apiCall = async (
   method: "GET" | "POST" | "PUT" | "DELETE" | "PATCH",
   url: string,
   data?: any,

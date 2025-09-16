@@ -4,11 +4,17 @@ import {
   applyLeaveFailure,
   applyLeaveSuccess,
   cancelLeave,
+  cancelLeaveFailure,
+  cancelLeaveSuccess,
   leaveHistory,
   leaveHistoryFailure,
   leaveHistorySuccuss,
 } from "../reducers/leaveSlice";
-import { applyLeaveService, leaveHitoryService } from "@/src/api/leaveService";
+import {
+  applyLeaveService,
+  cancelLeaveService,
+  leaveHitoryService,
+} from "@/src/api/leaveService";
 
 function* applyLeaveSaga(action: any): Generator<any, void, any> {
   try {
@@ -29,23 +35,18 @@ function* leaveHistorySaga(action: any): Generator<any, void, any> {
       yield put(leaveHistorySuccuss(response.data));
     }
   } catch (error: any) {
-    console.log("Error in leaveHistorySaga:", error);
-    
     yield put(leaveHistoryFailure(error.message));
   }
 }
 
 function* cancelLeaveSaga(action: any): Generator<any, void, any> {
   try {
-    const { userId, fromDate, toDate } = action.payload;
-    const response = yield call(leaveHitoryService, userId, fromDate, toDate);
+    const response = yield call(cancelLeaveService, action.payload);
     if (response.status === 200) {
-      yield put(leaveHistorySuccuss(response.data));
+      yield put(cancelLeaveSuccess(response.data));
     }
   } catch (error: any) {
-    console.log("Error in leaveHistorySaga:", error);
-    
-    yield put(leaveHistoryFailure(error.message));
+    yield put(cancelLeaveFailure(error.message));
   }
 }
 
