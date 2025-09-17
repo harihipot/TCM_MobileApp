@@ -8,13 +8,16 @@ import {
 } from "@/src/store/reducers/authSlice";
 import { resetAuthToken, storeAuthToken } from "@/src/utils/storageUtils";
 import React, { useEffect, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { Alert, Image, SafeAreaView, StyleSheet, Text } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
+
 const LoginScreen = (props: any) => {
+  const [rememberMe, setRememberMe] = useState(false);
   const dispatch = useDispatch();
   const [mobileNumber, setMobileNumber] = useState("8072472967");
-  const [password, setpassword] = useState("6daf282af850ef7b");
+  const [password, setpassword] = useState("Hipotsh@07");
   const [mobileNumberError, setMobileNumberError] = useState<string | null>(
     null
   );
@@ -32,20 +35,55 @@ const LoginScreen = (props: any) => {
       const { user } = authState;
       if (user && user.token && user.token !== "") {
         storeAuthToken(user.token);
-        props.navigation.replace("drawer");
+        if (user.isFirstTimeLogin) {
+          // Redirect to ChangePassword inside DrawerNavigator and prevent back navigation
+          props.navigation.reset({
+            index: 0,
+            routes: [
+              {
+                name: "drawer",
+                state: {
+                  routes: [{ name: strings.headers.changePassword }],
+                },
+              },
+            ],
+          });
+        } else {
+          props.navigation.replace("drawer");
+        }
       }
     }
   }, [authState]);
 
   useEffect(() => {
-    if (forgotPasswordResp) {
+    if (
+      forgotPasswordResp &&
+      forgotPasswordResp.toString().includes("successfully")
+    ) {
       Alert.alert(
-        strings.login.forgotPassword,
+        strings.login.forgotPasswordText,
         strings.login.passwordResetSuccess,
         [{ text: "OK", onPress: () => dispatch(resetAuth()) }]
       );
     }
   }, [forgotPasswordResp]);
+
+  // Load remembered credentials on mount
+  useEffect(() => {
+    (async () => {
+      try {
+        const storageUtils = require("@/src/utils/storageUtils");
+        const savedMobile = await storageUtils._get("rememberedMobile");
+        const savedPassword = await storageUtils._get("rememberedPassword");
+        const savedRememberMe = await storageUtils._get("rememberMe");
+        if (savedRememberMe === "true" && savedMobile && savedPassword) {
+          setMobileNumber(savedMobile);
+          setpassword(savedPassword);
+          setRememberMe(true);
+        }
+      } catch (e) {}
+    })();
+  }, []);
 
   const usernameChange = (text: string) => {
     setMobileNumber(text);
@@ -78,6 +116,15 @@ const LoginScreen = (props: any) => {
 
   const loginClicked = () => {
     if (validateInputs()) {
+      if (rememberMe) {
+        AsyncStorage.setItem("rememberedMobile", mobileNumber);
+        AsyncStorage.setItem("rememberedPassword", password);
+        AsyncStorage.setItem("rememberMe", "true");
+      } else {
+        AsyncStorage.removeItem("rememberedMobile");
+        AsyncStorage.removeItem("rememberedPassword");
+        AsyncStorage.setItem("rememberMe", "false");
+      }
       dispatch(loginUser({ mobileNumber, password }));
     }
   };
@@ -114,6 +161,17 @@ const LoginScreen = (props: any) => {
       <Text style={styles.forgotTextStyle} onPress={forgotPasswordClicked}>
         {strings.login.forgotPassword}
       </Text>
+      {/* <Text
+        style={styles.rememberMeContainer}
+        onPress={() => setRememberMe(!rememberMe)}
+      >
+        <Text style={styles.checkbox}>
+          {rememberMe
+            ? strings.login.checkboxChecked
+            : strings.login.checkboxUnchecked}
+        </Text>
+        {` ${strings.login.rememberMe}`}
+      </Text> */}
       <Button
         label={strings.login.loginText}
         onClick={loginClicked}
@@ -125,6 +183,19 @@ const LoginScreen = (props: any) => {
 };
 
 const styles = StyleSheet.create({
+  rememberMeContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 10,
+    marginLeft: 10,
+    fontSize: 16,
+    color: Colors.textColor,
+  },
+  checkbox: {
+    fontSize: 18,
+    marginRight: 8,
+    color: Colors.textColor,
+  },
   containerStyle: {
     flex: 1,
     alignItems: "center",

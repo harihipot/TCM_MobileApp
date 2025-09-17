@@ -1,3 +1,5 @@
+import { forgotPassword } from "../store/reducers/authSlice";
+
 export const strings = {
   login: {
     mobile: "Mobile Number",
@@ -8,6 +10,7 @@ export const strings = {
     confirmNewPassword: "Confirm New Password",
     loginText: "Login",
     forgotPassword: "Forgot Password?",
+    forgotPasswordText: "Forgot Password",
     logoutConfirmation: "Are you sure you want to logout?",
     changePasswordSuccess: "Password changed successfully, please relogin",
     mobileRequired: "Mobile number is required",
@@ -19,6 +22,11 @@ export const strings = {
     passwordRegexError:
       "Password must contain uppercase, lowercase, number, and special character",
     passwordsDoNotMatch: "Passwords do not match",
+    firstTimeChangePasswordMsg:
+      "Please change your default password to continue further",
+    rememberMe: "Remember me",
+    checkboxChecked: "☑",
+    checkboxUnchecked: "☐",
   },
   alert: {
     error: "Error",

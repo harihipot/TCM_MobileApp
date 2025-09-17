@@ -101,14 +101,18 @@ const DrawerNavigator = () => {
         headerTitleStyle: {
           fontWeight: "bold",
           color: Colors.textColor,
-          fontSize: 18,
+          fontSize: 20,
         },
         drawerActiveBackgroundColor: Colors.primary,
         drawerLabelStyle: {
           color: Colors.textColor,
           fontSize: 16,
         },
-        headerLeft: () => <DrawerToggleButton tintColor={Colors.textColor} />,
+        headerLeft: () =>
+          user?.isFirstTimeLogin ? null : (
+            <DrawerToggleButton tintColor={Colors.textColor} />
+          ),
+        swipeEnabled: !user?.isFirstTimeLogin,
       }}
       initialRouteName="Home"
       drawerContent={(props) => <LogoutDrawer {...props} />}

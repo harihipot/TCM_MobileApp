@@ -51,11 +51,8 @@ const ViewBills = () => {
 
   return (
     <View style={styles.containerStyle}>
-      <Text style={styles.greeting}>{`${strings.bills.hi}, ${
-        user?.firstName || ""
-      } ${user?.lastName || ""}`}</Text>
-
       <Text style={styles.dateRange}>
+        Bill For{" "}
         {`${monthName} ${monthStart.getDate()} - ${monthEnd.getDate()}, ${monthEnd.getFullYear()}`}
       </Text>
 
@@ -121,15 +118,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
   },
-  greeting: {
+  dateRange: {
     fontSize: 22,
     fontWeight: "bold",
-    marginBottom: 8,
-  },
-  dateRange: {
-    fontSize: 16,
     color: Colors.textColor,
-    marginBottom: 16,
+    marginBottom: 20,
   },
   label: {
     fontSize: 16,

@@ -1,115 +1,125 @@
+import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { roundIcon } from "@/assets/images";
 import { Button, Loader, TextInputComponent } from "@/src/components";
 import { strings } from "@/src/constants";
 import { persistor } from "@/src/store";
 import { changePassword, logout } from "@/src/store/reducers/authSlice";
 import { resetAuthToken } from "@/src/utils/storageUtils";
-import React, { useEffect, useState } from "react";
-
-import { Alert, Image, KeyboardAvoidingView, StyleSheet } from "react-native";
+import {
+  Alert,
+  Image,
+  KeyboardAvoidingView,
+  StyleSheet,
+  Text,
+} from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 
 const passwordRegex =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
 
-const ChangePassword = (props: any) => {
+const ChangePassword = ({ navigation }: any) => {
   const dispatch = useDispatch();
   const [currentPassword, setCurrentPassword] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [currentPasswordError, setCurrentPasswordError] = useState<
-    string | null
-  >(null);
-  const [passwordError, setPasswordError] = useState<string | null>(null);
-  const [confirmPasswordError, setConfirmPasswordError] = useState<
-    string | null
-  >(null);
-  const authState = useSelector((state: any) => state.auth);
-  const { isLoading, user } = authState;
+  const [errors, setErrors] = useState({
+    currentPassword: null as string | null,
+    password: null as string | null,
+    confirmPassword: null as string | null,
+  });
+  const { isLoading, user, changePasswordResp } = useSelector(
+    (state: any) => state.auth
+  );
 
   // Refresh page when hamburger menu (drawer) is clicked and page is focused
   // Reset all fields and errors
-  const resetFields = React.useCallback(() => {
+  const resetFields = useCallback(() => {
     setCurrentPassword("");
     setPassword("");
     setConfirmPassword("");
-    setCurrentPasswordError(null);
-    setPasswordError(null);
-    setConfirmPasswordError(null);
+    setErrors({ currentPassword: null, password: null, confirmPassword: null });
   }, []);
 
   useEffect(() => {
-    const unsubscribe = props.navigation.addListener("focus", resetFields);
+    const unsubscribe = navigation.addListener("focus", resetFields);
     return unsubscribe;
-  }, [props.navigation, resetFields]);
+  }, [navigation, resetFields]);
 
-  const performLogout = async () => {
+  // Prevent back navigation if isFirstTimeLogin
+  useEffect(() => {
+    const backHandler = () => user?.isFirstTimeLogin || false;
+    const subscription = require("react-native").BackHandler.addEventListener(
+      "hardwareBackPress",
+      backHandler
+    );
+    return () => subscription.remove();
+  }, [user?.isFirstTimeLogin]);
+
+  const performLogout = useCallback(async () => {
     resetAuthToken();
     dispatch(logout());
-    await persistor.purge(); // Clear persisted redux state
-
-    // Instantly reset navigation to login before clearing redux state
-    props.navigation.reset({
-      index: 0,
-      routes: [{ name: "login" }],
-    });
-  };
+    await persistor.purge();
+    navigation.reset({ index: 0, routes: [{ name: "login" }] });
+  }, [dispatch, navigation]);
 
   useEffect(() => {
-    if (authState) {
-      const { changePasswordResp } = authState;
-      if (changePasswordResp)
-        Alert.alert(
-          strings.alert.success,
-          strings.login.changePasswordSuccess,
-          [
-            {
-              text: strings.alert.ok,
-              onPress: performLogout,
-            },
-          ],
-          { cancelable: false }
-        );
+    if (changePasswordResp) {
+      Alert.alert(
+        strings.alert.success,
+        strings.login.changePasswordSuccess,
+        [{ text: strings.alert.ok, onPress: performLogout }],
+        { cancelable: false }
+      );
     }
-  }, [authState]);
+  }, [changePasswordResp, performLogout]);
 
   // Generic field validation
-  const validatePassword = React.useCallback((value: string) => {
+  const validatePassword = useCallback((value: string) => {
     if (value.length < 8) return strings.login.passwordMinLength;
     if (!passwordRegex.test(value)) return strings.login.passwordRegexError;
     return null;
   }, []);
 
-  const currentPasswordChange = (text: string) => {
+  const currentPasswordChange = useCallback((text: string) => {
     setCurrentPassword(text);
-    setCurrentPasswordError(
-      text.length >= 8 ? null : strings.login.passwordMinLength
-    );
-  };
+    setErrors((e) => ({
+      ...e,
+      currentPassword:
+        text.length >= 8 ? null : strings.login.passwordMinLength,
+    }));
+  }, []);
 
-  const passwordChange = (text: string) => {
-    setPassword(text);
-    setPasswordError(validatePassword(text));
-    // Also update confirm password error if confirmPassword is set
-    if (confirmPassword) {
-      setConfirmPasswordError(
-        text === confirmPassword
-          ? validatePassword(confirmPassword)
-          : strings.login.passwordsDoNotMatch
-      );
-    }
-  };
+  const passwordChange = useCallback(
+    (text: string) => {
+      setPassword(text);
+      setErrors((e) => ({
+        ...e,
+        password: validatePassword(text),
+        confirmPassword: confirmPassword
+          ? text === confirmPassword
+            ? validatePassword(confirmPassword)
+            : strings.login.passwordsDoNotMatch
+          : e.confirmPassword,
+      }));
+    },
+    [confirmPassword, validatePassword]
+  );
 
-  const confirmPasswordChange = (text: string) => {
-    setConfirmPassword(text);
-    setConfirmPasswordError(
-      text === password
-        ? validatePassword(text)
-        : strings.login.passwordsDoNotMatch
-    );
-  };
+  const confirmPasswordChange = useCallback(
+    (text: string) => {
+      setConfirmPassword(text);
+      setErrors((e) => ({
+        ...e,
+        confirmPassword:
+          text === password
+            ? validatePassword(text)
+            : strings.login.passwordsDoNotMatch,
+      }));
+    },
+    [password, validatePassword]
+  );
 
-  const onChangePasswordClicked = () => {
+  const onChangePasswordClicked = useCallback(() => {
     const currentError =
       currentPassword.length >= 8 ? null : strings.login.passwordMinLength;
     const passwordErr = validatePassword(password);
@@ -117,9 +127,11 @@ const ChangePassword = (props: any) => {
       password === confirmPassword
         ? validatePassword(confirmPassword)
         : strings.login.passwordsDoNotMatch;
-    setCurrentPasswordError(currentError);
-    setPasswordError(passwordErr);
-    setConfirmPasswordError(confirmErr);
+    setErrors({
+      currentPassword: currentError,
+      password: passwordErr,
+      confirmPassword: confirmErr,
+    });
     if (currentError || passwordErr || confirmErr) return;
     dispatch(
       changePassword({
@@ -128,10 +140,49 @@ const ChangePassword = (props: any) => {
         confirmPassword: confirmPassword,
       })
     );
-  };
+  }, [
+    currentPassword,
+    password,
+    confirmPassword,
+    user?.id,
+    dispatch,
+    validatePassword,
+  ]);
+
+  const styles = useMemo(
+    () =>
+      StyleSheet.create({
+        containerStyle: {
+          flex: 1,
+          alignItems: "center",
+          paddingTop: "20%",
+        },
+        imageStyle: {
+          alignSelf: "center",
+          width: 120,
+          height: 120,
+        },
+        buttonStyle: {
+          marginTop: 50,
+        },
+        infoTextStyle: {
+          color: "#d9534f",
+          fontWeight: "bold",
+          fontSize: 16,
+          marginBottom: 20,
+          textAlign: "center",
+        },
+      }),
+    []
+  );
 
   return (
     <KeyboardAvoidingView behavior="padding" style={styles.containerStyle}>
+      {user?.isFirstTimeLogin && (
+        <Text style={styles.infoTextStyle}>
+          {strings.login.firstTimeChangePasswordMsg}
+        </Text>
+      )}
       <Image
         style={styles.imageStyle}
         resizeMode="contain"
@@ -141,19 +192,19 @@ const ChangePassword = (props: any) => {
         placeholderText={strings.login.currentPassword}
         textValue={currentPassword}
         onChange={currentPasswordChange}
-        errorMessage={currentPasswordError}
+        errorMessage={errors.currentPassword}
       />
       <TextInputComponent
         placeholderText={strings.login.newPassword}
         textValue={password}
         onChange={passwordChange}
-        errorMessage={passwordError}
+        errorMessage={errors.password}
       />
       <TextInputComponent
         placeholderText={strings.login.confirmNewPassword}
         textValue={confirmPassword}
         onChange={confirmPasswordChange}
-        errorMessage={confirmPasswordError}
+        errorMessage={errors.confirmPassword}
       />
       <Button
         label={strings.common.submit}
@@ -164,21 +215,5 @@ const ChangePassword = (props: any) => {
     </KeyboardAvoidingView>
   );
 };
-
-const styles = StyleSheet.create({
-  containerStyle: {
-    flex: 1,
-    alignItems: "center",
-    marginTop: "20%",
-  },
-  imageStyle: {
-    alignSelf: "center",
-    width: 120,
-    height: 120,
-  },
-  buttonStyle: {
-    marginTop: 50,
-  },
-});
 
 export default ChangePassword;
