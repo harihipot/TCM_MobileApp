@@ -6,7 +6,10 @@ import { Pressable, StyleSheet, Text, View, Image } from "react-native";
 import { useSelector } from "react-redux";
 
 import * as ImagePicker from "expo-image-picker";
-import { roundIcon } from "@/assets/images";
+import Images from "@/assets/images";
+import TextRecognition, {
+  TextRecognitionScript,
+} from "@react-native-ml-kit/text-recognition";
 
 const ViewBills = () => {
   const user = useSelector((state: any) => state.auth.user);
@@ -27,6 +30,21 @@ const ViewBills = () => {
     if (text.trim()) setTransIdError("");
   }, []);
 
+  // Extract transaction details
+  const extractDetails = (text: any) => {
+    console.log("Extracting from text:", text);
+
+    let txnIdMatch = text.match(/\b[0-9A-Z]{10,}\b/); // Transaction ID (alphanumeric 10+ chars)
+    let dateMatch = text.match(/\b\d{2}[-/]\d{2}[-/]\d{4}\b/); // Date format dd-mm-yyyy or dd/mm/yyyy
+    let upiMatch = text.match(/\b[\w.-]+@[\w.-]+\b/); // UPI ID
+
+    return {
+      transactionId: txnIdMatch ? txnIdMatch[0] : null,
+      date: dateMatch ? dateMatch[0] : null,
+      upiId: upiMatch ? upiMatch[0] : null,
+    };
+  };
+
   const pickImage = React.useCallback(async () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
@@ -37,6 +55,11 @@ const ViewBills = () => {
     if (!result.canceled && result.assets && result.assets.length > 0) {
       setImage(result.assets[0].uri);
       setImageError(false);
+      const recognitionResult = await TextRecognition.recognize(
+        result.assets[0].uri
+      );
+      const foundDetails = extractDetails(recognitionResult.text);
+      console.log("Text recognition result:", foundDetails);
     }
   }, []);
 
@@ -94,7 +117,7 @@ const ViewBills = () => {
 
       <Pressable style={styles.uploadBtn} onPress={pickImage}>
         <Image
-          source={image ? { uri: image } : roundIcon}
+          source={image ? { uri: image } : Images.roundIcon}
           style={styles.imagePreview}
         />
         <Text style={[styles.uploadBtnText, imageError && styles.errorRed]}>

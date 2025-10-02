@@ -1,4 +1,4 @@
-import { roundIcon } from "@/assets/images";
+import Images from "@/assets/images";
 import { Colors } from "@/src/constants";
 import React from "react";
 import {
@@ -81,7 +81,7 @@ export const TextInputComponent = (props: TextInputViewProps) => {
               style={styles.imageContainerStyle}
             >
               <Image
-                source={image ? image : roundIcon}
+                source={image ? image : Images.roundIcon}
                 style={styles.imageStyle}
                 resizeMode="contain"
               />

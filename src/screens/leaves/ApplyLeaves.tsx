@@ -1,4 +1,4 @@
-import { roundIcon } from "@/assets/images";
+import Images from "@/assets/images";
 import { Button, Loader, TextInputComponent } from "@/src/components";
 import { strings, Colors } from "@/src/constants";
 import { applyLeave, resetApplyLeave } from "@/src/store/reducers/leaveSlice";
@@ -81,7 +81,7 @@ const ApplyLeaves = () => {
               : moment(fromDate).format("DD-MM-YYYY").toString()
           }
           isEditable={false}
-          image={roundIcon}
+          image={Images.roundIcon}
           imageOnClick={() => openCanlendar(true)}
         />
         <TextInputComponent
@@ -92,7 +92,7 @@ const ApplyLeaves = () => {
               ? toDate
               : moment(toDate).format("DD-MM-YYYY").toString()
           }
-          image={roundIcon}
+          image={Images.roundIcon}
           imageOnClick={() => openCanlendar(false)}
         />
         {selectedDays === "" ? null : (

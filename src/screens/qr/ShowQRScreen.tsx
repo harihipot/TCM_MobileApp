@@ -1,4 +1,4 @@
-import { roundIcon } from "@/assets/images";
+import Images from "@/assets/images";
 import { Colors } from "@/src/constants";
 import React from "react";
 import { SafeAreaView, StyleSheet, Text } from "react-native";
@@ -18,7 +18,7 @@ const ShowQRScreen = () => {
       <QRCode
         value={`${user.rollNo}&${user.messNo}&${user.firstName}&${user.batch}`}
         color={Colors.primary}
-        logo={roundIcon}
+        logo={Images.roundIcon}
         logoSize={60}
         logoBackgroundColor="transparent"
         size={300}

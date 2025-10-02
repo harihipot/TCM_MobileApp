@@ -1,4 +1,4 @@
-import { roundIcon } from "@/assets/images";
+import Images from "@/assets/images";
 import { strings } from "@/src/constants";
 
 export const getDashboardMenu = (role: string) => {
@@ -9,25 +9,25 @@ export const getDashboardMenu = (role: string) => {
     menu = [
       {
         label: strings.homeMenu.showQr,
-        image: roundIcon,
+        image: Images.roundIcon,
         route: "showQR",
         isDisable: false,
       },
       {
         label: strings.homeMenu.applyLeave,
-        image: roundIcon,
+        image: Images.roundIcon,
         route: "applyLeave",
         isDisable: false,
       },
       {
         label: strings.homeMenu.viewBill,
-        image: roundIcon,
+        image: Images.roundIcon,
         route: "viewBill",
         isDisable: checkDate() ? false : true,
       },
       {
         label: strings.homeMenu.leaveHistory,
-        image: roundIcon,
+        image: Images.roundIcon,
         route: "leaveHistory",
         isDisable: false,
       },
@@ -36,25 +36,25 @@ export const getDashboardMenu = (role: string) => {
     menu = [
       {
         label: strings.homeMenu.scanQr,
-        image: roundIcon,
+        image: Images.roundIcon,
         route: "sanQR",
         isDisable: false,
       },
       {
         label: strings.homeMenu.todayLeaves,
-        image: roundIcon,
+        image: Images.roundIcon,
         route: "sanQR",
         isDisable: false,
       },
       {
         label: strings.homeMenu.submitAttendance,
-        image: roundIcon,
+        image: Images.roundIcon,
         route: "sanQR",
         isDisable: false,
       },
       {
         label: strings.homeMenu.collection,
-        image: roundIcon,
+        image: Images.roundIcon,
         route: "sanQR",
         isDisable: false,
       },
@@ -63,13 +63,13 @@ export const getDashboardMenu = (role: string) => {
     menu = [
       {
         label: strings.homeMenu.todayLeaves,
-        image: roundIcon,
+        image: Images.roundIcon,
         route: "sanQR",
         isDisable: false,
       },
       {
         label: strings.homeMenu.collection,
-        image: roundIcon,
+        image: Images.roundIcon,
         route: "sanQR",
         isDisable: false,
       },

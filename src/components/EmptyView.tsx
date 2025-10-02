@@ -1,4 +1,4 @@
-import { greyedLogo } from "@/assets/images";
+import Images from "@/assets/images";
 import React from "react";
 import { View, Text, Image, StyleSheet } from "react-native";
 
@@ -8,7 +8,11 @@ interface EmptyViewProps {
 
 export const EmptyView: React.FC<EmptyViewProps> = ({ message }) => (
   <View style={styles.container}>
-    <Image source={greyedLogo} style={styles.image} resizeMode="contain" />
+    <Image
+      source={Images.greyedLogo}
+      style={styles.image}
+      resizeMode="contain"
+    />
     <Text style={styles.text}>{message}</Text>
   </View>
 );

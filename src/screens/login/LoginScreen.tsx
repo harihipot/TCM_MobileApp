@@ -1,4 +1,4 @@
-import { roundIcon } from "@/assets/images";
+import Images from "@/assets/images";
 import { Button, Loader, TextInputComponent } from "@/src/components";
 import { strings, Colors } from "@/src/constants";
 import {
@@ -142,7 +142,7 @@ const LoginScreen = (props: any) => {
       <Image
         style={styles.imageStyle}
         resizeMode="contain"
-        source={roundIcon}
+        source={Images.roundIcon}
       />
       <TextInputComponent
         placeholderText={strings.login.mobile}

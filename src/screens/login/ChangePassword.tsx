@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo, useCallback } from "react";
-import { roundIcon } from "@/assets/images";
+import Images from "@/assets/images";
 import { Button, Loader, TextInputComponent } from "@/src/components";
 import { strings } from "@/src/constants";
 import { persistor } from "@/src/store";
@@ -186,7 +186,7 @@ const ChangePassword = ({ navigation }: any) => {
       <Image
         style={styles.imageStyle}
         resizeMode="contain"
-        source={roundIcon}
+        source={Images.roundIcon}
       />
       <TextInputComponent
         placeholderText={strings.login.currentPassword}
