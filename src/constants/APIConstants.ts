@@ -14,8 +14,19 @@ export const APIConstants = {
     CHANGE_PASSWORD: "/api/gmc/auth/change-password",
     FORGOT_PASSWORD: "/api/gmc/auth/forgot-password",
     CREATE_USER: "/api/gmc/user",
+
+    //Leaves
     APPLY_LEAVE: "/api/gmc/leave/apply",
     GET_LEAVE_HISTORY: "api/gmc/leave",
     CANCEL_LEAVE: "/api/gmc/leave/cancel",
+
+    //Menu
+    MENU_ITEM_URL: "/api/gmc/menu_item",
+
+    //meals
+    DAILY_MEAL_URL: "/api/gmc/daily_meal",
+
+    //Food items
+    FOOD_ITEM_URL: "/api/gmc/food_item",
   },
 };

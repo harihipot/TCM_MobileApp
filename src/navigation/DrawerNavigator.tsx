@@ -17,6 +17,11 @@ import ChangePassword from "../screens/login/ChangePassword";
 import { LogoutDrawer } from "@/src/components";
 
 import { useSelector } from "react-redux";
+import YourMenu from "../screens/menu/YourMenu";
+import CreateMenu from "../screens/menu/CreateMenu";
+import MealList from "../screens/menu/MealList";
+import AddMeal from "../screens/menu/AddMeal";
+import FoodList from "../screens/menu/FoodList";
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
 
@@ -122,6 +127,14 @@ const DrawerNavigator = () => {
         component={HomeStack}
         options={{ headerShown: false }}
       />
+      {["student", "admin"].includes(user?.role?.name) && (
+        <Drawer.Screen
+          name={
+            user?.role?.name === "student" ? strings.headers.yourMenu : "Menu"
+          }
+          component={YourMenu}
+        />
+      )}
       {user?.role?.name === "student" && (
         <Drawer.Screen
           name={strings.headers.billingHistory}
@@ -132,6 +145,9 @@ const DrawerNavigator = () => {
         name={strings.headers.changePassword}
         component={ChangePassword}
       />
+      {user?.role?.name === "student" && (
+        <Drawer.Screen name={strings.headers.contactUs} component={FoodList} />
+      )}
     </Drawer.Navigator>
   );
 };

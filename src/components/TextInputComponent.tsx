@@ -124,7 +124,7 @@ const styles = StyleSheet.create({
     paddingTop: 4,
     paddingHorizontal: 10,
     alignSelf: "flex-start",
-    marginLeft: 36,
+    paddingLeft: 26,
   },
   imageContainerStyle: {
     width: 30,

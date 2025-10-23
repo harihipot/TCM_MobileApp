@@ -1,4 +1,5 @@
 import { TextInputComponent, Button, IconTooltip } from "@/src/components";
+import Select from "@/src/components/Select";
 import { strings, Colors } from "@/src/constants";
 import React, { useState } from "react";
 
@@ -15,6 +16,13 @@ const ViewBills = () => {
   const user = useSelector((state: any) => state.auth.user);
   const [transId, setTransId] = useState("");
   const [transIdError, setTransIdError] = useState("");
+
+  // Example options for transaction ID dropdown
+  const transactionOptions = [
+    { label: "GPay", value: "1" },
+    { label: "PhonePe", value: "2" },
+    { label: "CRED", value: "3" },
+  ];
   const [image, setImage] = useState<string | null>(null);
   const [imageError, setImageError] = useState(false);
 
@@ -24,11 +32,6 @@ const ViewBills = () => {
   const monthName = monthStart.toLocaleString("default", { month: "long" });
   const presentDays = 20; // dynamic
   const absentDays = 5; // dynamic
-
-  const changeTransId = React.useCallback((text: string) => {
-    setTransId(text);
-    if (text.trim()) setTransIdError("");
-  }, []);
 
   // Extract transaction details
   const extractDetails = (text: any) => {
@@ -49,7 +52,6 @@ const ViewBills = () => {
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
-      aspect: [4, 8],
       quality: 1,
     });
     if (!result.canceled && result.assets && result.assets.length > 0) {
@@ -101,15 +103,16 @@ const ViewBills = () => {
         <Text style={styles.value}>Rs {presentDays * 160}</Text>
       </View>
 
-      <TextInputComponent
-        label={`${strings.bills.transactionId} *`}
-        textValue={transId}
-        autoCapitalizeProp="characters"
-        containerStyleProp={styles.input}
-        onChange={changeTransId}
-        errorMessage={transIdError}
-        errorStyle={styles.inputError}
+      <Select
+        title={`${strings.bills.upiApps} *`}
+        options={transactionOptions}
+        selectedValue={transId}
+        onValueChange={(value) => {
+          setTransId(value);
+          setTransIdError(value ? "" : strings.bills.transactionIdRequired);
+        }}
       />
+      {!!transIdError && <Text style={styles.inputError}>{transIdError}</Text>}
 
       <Text
         style={styles.sectionLabel}

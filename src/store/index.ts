@@ -34,8 +34,12 @@ const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       thunk: false,
+      // Raise warnAfter slightly to avoid noisy warnings in dev when serializable checks
+      // take longer for large state/actions. See:
+      // https://redux-toolkit.js.org/api/getDefaultMiddleware
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+        warnAfter: 64, // ms (default 32) - safe for dev only
       },
     }).concat(sagaMiddleware),
 });
