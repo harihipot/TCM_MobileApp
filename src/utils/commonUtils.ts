@@ -50,7 +50,7 @@ export const getDashboardMenu = (role: string) => {
       {
         label: strings.homeMenu.submitAttendance,
         image: Images.roundIcon,
-        route: "sanQR",
+        route: "attendanceSubmission",
         isDisable: false,
       },
       {
@@ -188,7 +188,7 @@ export const pickMealForNow = (daySection: any) => {
     section: any,
     opts?: { onlyActive?: boolean; lowerCaseNames?: boolean }
   ): { title: string; meals: string[] } => {
-    const list = section.data ?? section.menu ?? [];
+    const list = section?.data ?? section?.menu ?? [];
     const names = list
       .filter((i: { isActive: any }) =>
         opts?.onlyActive ? !!i.isActive : true
@@ -196,7 +196,7 @@ export const pickMealForNow = (daySection: any) => {
       .map((i: { name: any }) => (i.name ?? "").trim())
       .filter(Boolean)
       .map((n: string) => (opts?.lowerCaseNames ? n.toLowerCase() : n));
-    return { title: section.title ?? section.day ?? "", meals: names };
+    return { title: section?.title ?? section?.day ?? "", meals: names };
   };
 
   const findMeal = (names: string[]) => {

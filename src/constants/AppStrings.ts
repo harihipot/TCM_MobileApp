@@ -60,6 +60,7 @@ export const strings = {
     leaveHistory: "Leave History",
     leaveDetails: "Leave Deatils",
     viewBill: "View Bill",
+    attendanceSubmission: "Submit Attendance",
   },
   leave: {
     toDate: "To Date",
@@ -85,6 +86,16 @@ export const strings = {
     failed: "Failed to save meal entry",
     grantPermission: "Grant permission",
     needPermission: "We need your permission to show the camera",
+  },
+  attendance: {
+    totalMealEntries: "Total meal entries:",
+    mealIds: "Meal IDs:",
+    markAttendance: "Mark Attendance",
+    noEntries: "There are no meal entries to submit.",
+    noEntriesFound: "No entries found",
+    submitted: "Attendance submitted",
+    failedSubmit: "Failed to submit attendance",
+    confirmSubmit: (count: number) => `Submit ${count} attendance entries?`,
   },
   bills: {
     hi: "Hi",

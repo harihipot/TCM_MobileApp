@@ -20,8 +20,8 @@ import { useSelector } from "react-redux";
 import YourMenu from "../screens/menu/YourMenu";
 import CreateMenu from "../screens/menu/CreateMenu";
 import MealList from "../screens/menu/MealList";
-import AddMeal from "../screens/menu/AddMeal";
 import FoodList from "../screens/menu/FoodList";
+import Attendance from "../screens/attendance/Attendance";
 const Drawer = createDrawerNavigator();
 const Stack = createStackNavigator();
 
@@ -88,6 +88,12 @@ const HomeStack = () => {
         name={"sanQR"}
         component={ScanQRScreen}
         options={setOptions(strings.headers.scanQr)}
+      />
+
+      <Stack.Screen
+        name={"attendanceSubmission"}
+        component={Attendance}
+        options={setOptions(strings.headers.attendanceSubmission)}
       />
     </Stack.Navigator>
   );

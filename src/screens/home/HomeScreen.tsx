@@ -70,8 +70,9 @@ const HomeScreen = (props: any) => {
     props.navigation.navigate(cardItem.route);
   };
 
-  return (
-    <SafeAreaView style={{ flex: 1 }}>
+  // small component to render the current meal card + background
+  const MealNowCard: React.FC<{ mealNow?: any }> = ({ mealNow }) => {
+    return (
       <ImageBackground
         source={Images.foodImgBg}
         style={styles.imageStyle}
@@ -120,6 +121,13 @@ const HomeScreen = (props: any) => {
           )}
         </View>
       </ImageBackground>
+    );
+  };
+
+  return (
+    <SafeAreaView style={{ flex: 1 }}>
+      <MealNowCard mealNow={mealNow} />
+
       <View style={styles.menuContainerStyle}>
         {Array.isArray(dashboardFeature) &&
           dashboardFeature.map((item: any, index: number) => (

@@ -1,17 +1,24 @@
 import { Button } from "@/src/components";
 import { Colors, strings } from "@/src/constants";
 import { CameraView, useCameraPermissions } from "expo-camera";
-import React, { useState, useRef } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import React, {
+  useState,
+  useRef,
+  useCallback,
+  useMemo,
+  useEffect,
+} from "react";
+import { StyleSheet, Text, View, ActivityIndicator } from "react-native";
 import Snackbar from "react-native-snackbar";
 
-const ScanQRScreen = (props: any) => {
+const ScanQRScreen: React.FC = () => {
   const [permission, requestPermission] = useCameraPermissions();
   const [scanned, setScanned] = useState(false);
   const insertMealEntryRef = useRef<any>(null);
+  const resetTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Example QR: "userID|mealD" (customize parsing as needed)
-  const handleBarCodeScanned = React.useCallback(
+  const handleBarCodeScanned = useCallback(
     async (result: { data: string }) => {
       if (scanned) return;
       setScanned(true);
@@ -39,7 +46,8 @@ const ScanQRScreen = (props: any) => {
           duration: Snackbar.LENGTH_SHORT,
           backgroundColor: Colors.primary,
         });
-        setTimeout(() => setScanned(false), 1200);
+        // store timeout so we can clear it on unmount to avoid setting state
+        resetTimeoutRef.current = setTimeout(() => setScanned(false), 1200);
       } catch (err: any) {
         if (err.message && err.message.includes("Duplicate entry")) {
           Snackbar.show({
@@ -60,9 +68,26 @@ const ScanQRScreen = (props: any) => {
     [scanned]
   );
 
+  // memoize scanner settings to avoid object re-creation every render
+  const scannerSettings = useMemo(() => ({ barcodeTypes: ["qr"] as any }), []);
+
+  // clear pending timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (resetTimeoutRef.current) {
+        clearTimeout(resetTimeoutRef.current as any);
+        resetTimeoutRef.current = null;
+      }
+    };
+  }, []);
+
   if (!permission) {
     // Camera permissions are still loading.
-    return <View />;
+    return (
+      <View style={styles.container}>
+        <ActivityIndicator size="large" color={Colors.primary} />
+      </View>
+    );
   }
 
   if (!permission.granted) {
@@ -80,18 +105,14 @@ const ScanQRScreen = (props: any) => {
 
   return (
     <View style={styles.container}>
-      <View>
-        <CameraView
-          style={styles.camera}
-          barcodeScannerSettings={{
-            barcodeTypes: ["qr"],
-          }}
-          onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
-          facing={"back"}
-        />
-      </View>
+      <CameraView
+        style={styles.camera}
+        barcodeScannerSettings={scannerSettings}
+        onBarcodeScanned={scanned ? undefined : handleBarCodeScanned}
+        facing={"back"}
+      />
       <Text style={styles.text}>
-        {scanned ? "Processing..." : "Scan QR code to mark attendance"}
+        {scanned ? strings.qr.processing : strings.qr.scanPrompt}
       </Text>
     </View>
   );
@@ -122,4 +143,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ScanQRScreen;
+export default React.memo(ScanQRScreen);

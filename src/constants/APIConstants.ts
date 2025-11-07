@@ -1,6 +1,7 @@
 export const APIConstants = {
-  BASE_URL: "https://tmc-gmc.el.r.appspot.com", // Base URL for the API
+  // BASE_URL: "https://tmc-gmc.el.r.appspot.com", // Base URL for the API
   TIMEOUT: 10000, // Request timeout in milliseconds
+  BASE_URL: "https://tf-mess.el.r.appspot.com",
   RETRY_LIMIT: 3, // Maximum number of retry attempts for failed requests
   HEADERS: {
     // Default headers for API requests
@@ -28,5 +29,12 @@ export const APIConstants = {
 
     //Food items
     FOOD_ITEM_URL: "/api/gmc/food_item",
+
+    //Attendance
+    ATTENDANCE_URL: "/api/gmc/attendance",
+
+    //Billing
+    GENERATE_BILL_URL: "/api/gmc/bill/generate",
+    GET_BILL_URL: "/api/gmc/bill",
   },
 };

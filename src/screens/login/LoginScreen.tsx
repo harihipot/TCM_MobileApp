@@ -8,7 +8,6 @@ import {
 } from "@/src/store/reducers/authSlice";
 import { resetAuthToken, storeAuthToken } from "@/src/utils/storageUtils";
 import React, { useEffect, useState } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { Alert, Image, SafeAreaView, StyleSheet, Text } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
@@ -16,8 +15,8 @@ import { useDispatch, useSelector } from "react-redux";
 const LoginScreen = (props: any) => {
   const [rememberMe, setRememberMe] = useState(false);
   const dispatch = useDispatch();
-  const [mobileNumber, setMobileNumber] = useState("8072472967");
-  const [password, setpassword] = useState("Hipotsh@07");
+  const [mobileNumber, setMobileNumber] = useState("8072807617");
+  const [password, setpassword] = useState("31f08807f963b05b");
   const [mobileNumberError, setMobileNumberError] = useState<string | null>(
     null
   );
@@ -68,23 +67,6 @@ const LoginScreen = (props: any) => {
     }
   }, [forgotPasswordResp]);
 
-  // Load remembered credentials on mount
-  useEffect(() => {
-    (async () => {
-      try {
-        const storageUtils = require("@/src/utils/storageUtils");
-        const savedMobile = await storageUtils._get("rememberedMobile");
-        const savedPassword = await storageUtils._get("rememberedPassword");
-        const savedRememberMe = await storageUtils._get("rememberMe");
-        if (savedRememberMe === "true" && savedMobile && savedPassword) {
-          setMobileNumber(savedMobile);
-          setpassword(savedPassword);
-          setRememberMe(true);
-        }
-      } catch (e) {}
-    })();
-  }, []);
-
   const usernameChange = (text: string) => {
     setMobileNumber(text);
     setMobileNumberError(null);
@@ -116,15 +98,6 @@ const LoginScreen = (props: any) => {
 
   const loginClicked = () => {
     if (validateInputs()) {
-      if (rememberMe) {
-        AsyncStorage.setItem("rememberedMobile", mobileNumber);
-        AsyncStorage.setItem("rememberedPassword", password);
-        AsyncStorage.setItem("rememberMe", "true");
-      } else {
-        AsyncStorage.removeItem("rememberedMobile");
-        AsyncStorage.removeItem("rememberedPassword");
-        AsyncStorage.setItem("rememberMe", "false");
-      }
       dispatch(loginUser({ mobileNumber, password }));
     }
   };
@@ -161,7 +134,7 @@ const LoginScreen = (props: any) => {
       <Text style={styles.forgotTextStyle} onPress={forgotPasswordClicked}>
         {strings.login.forgotPassword}
       </Text>
-      {/* <Text
+      <Text
         style={styles.rememberMeContainer}
         onPress={() => setRememberMe(!rememberMe)}
       >
@@ -171,7 +144,7 @@ const LoginScreen = (props: any) => {
             : strings.login.checkboxUnchecked}
         </Text>
         {` ${strings.login.rememberMe}`}
-      </Text> */}
+      </Text>
       <Button
         label={strings.login.loginText}
         onClick={loginClicked}
