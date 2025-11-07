@@ -101,7 +101,7 @@ const HomeStack = () => {
 
 const DrawerNavigator = () => {
   const user = useSelector((state: any) => state.auth.user);
-
+  const role = user?.role?.name?.toLowerCase();
   return (
     <Drawer.Navigator
       screenOptions={{
@@ -133,15 +133,13 @@ const DrawerNavigator = () => {
         component={HomeStack}
         options={{ headerShown: false }}
       />
-      {["student", "admin"].includes(user?.role?.name) && (
+      {["student", "admin"].includes(role) && (
         <Drawer.Screen
-          name={
-            user?.role?.name === "student" ? strings.headers.yourMenu : "Menu"
-          }
+          name={role === "student" ? strings.headers.yourMenu : "Menu"}
           component={YourMenu}
         />
       )}
-      {user?.role?.name === "student" && (
+      {role === "student" && (
         <Drawer.Screen
           name={strings.headers.billingHistory}
           component={BillingHistory}
@@ -151,7 +149,7 @@ const DrawerNavigator = () => {
         name={strings.headers.changePassword}
         component={ChangePassword}
       />
-      {user?.role?.name === "student" && (
+      {role === "student" && (
         <Drawer.Screen name={strings.headers.contactUs} component={FoodList} />
       )}
     </Drawer.Navigator>

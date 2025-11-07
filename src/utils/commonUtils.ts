@@ -6,7 +6,7 @@ export const getDashboardMenu = (role: string) => {
   let menu: { label: string; image?: any; route?: any; isDisable: boolean }[] =
     [];
 
-  if (role === "student") {
+  if (role.toLowerCase() === "student") {
     menu = [
       {
         label: strings.homeMenu.showQr,
@@ -33,7 +33,7 @@ export const getDashboardMenu = (role: string) => {
         isDisable: false,
       },
     ];
-  } else if (role === "admin") {
+  } else if (role.toLowerCase() === "admin") {
     menu = [
       {
         label: strings.homeMenu.scanQr,
@@ -60,7 +60,7 @@ export const getDashboardMenu = (role: string) => {
         isDisable: false,
       },
     ];
-  } else if (role === "super admin") {
+  } else if (role.toLowerCase() === "super admin") {
     menu = [
       {
         label: strings.homeMenu.todayLeaves,

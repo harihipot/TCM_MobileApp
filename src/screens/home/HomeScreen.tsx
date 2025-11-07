@@ -27,7 +27,7 @@ const HomeScreen = (props: any) => {
   const user = useSelector((state: any) => state.auth.user);
   const yourMenuState = useSelector((state: any) => state.menu.menuItems);
 
-  const dashboardFeature = getDashboardMenu(user?.role?.name);
+  const dashboardFeature = getDashboardMenu(user?.role?.name?.toLowerCase());
 
   useEffect(() => {
     if (user?.role?.name === "admin") {

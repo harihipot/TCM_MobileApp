@@ -16,7 +16,7 @@ const LoginScreen = (props: any) => {
   const [rememberMe, setRememberMe] = useState(false);
   const dispatch = useDispatch();
   const [mobileNumber, setMobileNumber] = useState("8072807617");
-  const [password, setpassword] = useState("31f08807f963b05b");
+  const [password, setpassword] = useState("Gcm@2025");
   const [mobileNumberError, setMobileNumberError] = useState<string | null>(
     null
   );
