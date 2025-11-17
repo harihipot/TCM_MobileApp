@@ -15,7 +15,7 @@ import { useDispatch, useSelector } from "react-redux";
 const LoginScreen = (props: any) => {
   const [rememberMe, setRememberMe] = useState(false);
   const dispatch = useDispatch();
-  const [mobileNumber, setMobileNumber] = useState("8072807617");
+  const [mobileNumber, setMobileNumber] = useState("7418221518");
   const [password, setpassword] = useState("Gcm@2025");
   const [mobileNumberError, setMobileNumberError] = useState<string | null>(
     null
@@ -107,7 +107,7 @@ const LoginScreen = (props: any) => {
       setMobileNumberError(strings.login.invalidMobile);
       return;
     }
-    dispatch(forgotPassword({ mobileNumber }));
+    dispatch(forgotPassword(mobileNumber));
   };
 
   return (
@@ -123,6 +123,7 @@ const LoginScreen = (props: any) => {
         onChange={usernameChange}
         containerStyleProp={styles.containerStyleProp}
         errorMessage={mobileNumberError}
+        errorStyle={{ marginLeft: 26 }}
       />
       <TextInputComponent
         placeholderText={strings.login.password}
@@ -130,6 +131,7 @@ const LoginScreen = (props: any) => {
         onChange={passwordChange}
         containerStyleProp={styles.containerStyleProp}
         errorMessage={passwordError}
+        errorStyle={{ marginLeft: 26 }}
       />
       <Text style={styles.forgotTextStyle} onPress={forgotPasswordClicked}>
         {strings.login.forgotPassword}

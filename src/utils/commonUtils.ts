@@ -6,7 +6,7 @@ export const getDashboardMenu = (role: string) => {
   let menu: { label: string; image?: any; route?: any; isDisable: boolean }[] =
     [];
 
-  if (role.toLowerCase() === "student") {
+  if (role?.toLowerCase() === "student") {
     menu = [
       {
         label: strings.homeMenu.showQr,
@@ -33,7 +33,7 @@ export const getDashboardMenu = (role: string) => {
         isDisable: false,
       },
     ];
-  } else if (role.toLowerCase() === "admin") {
+  } else if (role?.toLowerCase() === "admin") {
     menu = [
       {
         label: strings.homeMenu.scanQr,
@@ -60,7 +60,7 @@ export const getDashboardMenu = (role: string) => {
         isDisable: false,
       },
     ];
-  } else if (role.toLowerCase() === "super admin") {
+  } else if (role?.toLowerCase() === "super admin") {
     menu = [
       {
         label: strings.homeMenu.todayLeaves,
@@ -83,7 +83,7 @@ export const lcFirst = (value: string) => {
   if (typeof value !== "string") {
     return "";
   }
-  return value[0].toLowerCase() + value.slice(1);
+  return value[0]?.toLowerCase() + value?.slice(1);
 };
 
 export const checkDate = () => {

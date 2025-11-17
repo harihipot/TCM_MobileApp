@@ -16,15 +16,36 @@ const ScanQRScreen: React.FC = () => {
   const [scanned, setScanned] = useState(false);
   const insertMealEntryRef = useRef<any>(null);
   const resetTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  // keep last scanned raw data to avoid processing the same QR repeatedly
+  const lastScannedRef = useRef<string | null>(null);
 
   // Example QR: "userID|mealD" (customize parsing as needed)
   const handleBarCodeScanned = useCallback(
     async (result: { data: string }) => {
       if (scanned) return;
-      setScanned(true);
+
       // Defensive: trim and validate
       const raw = result.data?.trim?.() || "";
-      const [userID, mealD] = raw.split("|").map((v) => v?.trim?.() || "");
+
+      // If the same QR was just scanned, ignore it to avoid duplicate processing
+      if (raw && lastScannedRef.current === raw) {
+        // show a small feedback for duplicate-scans (uses existing duplicate string)
+        Snackbar.show({
+          text: strings.qr.duplicate,
+          duration: Snackbar.LENGTH_SHORT,
+          backgroundColor: Colors.errorRed,
+        });
+        return;
+      }
+
+      // mark scanning started and remember raw value
+      setScanned(true);
+      lastScannedRef.current = raw;
+
+      const [userID, username, mealD] = raw
+        .split("&")
+        .map((v) => v?.trim?.() || "");
+
       if (!userID || !mealD) {
         Snackbar.show({
           text: strings.qr.invalidFormat,
@@ -47,7 +68,12 @@ const ScanQRScreen: React.FC = () => {
           backgroundColor: Colors.primary,
         });
         // store timeout so we can clear it on unmount to avoid setting state
-        resetTimeoutRef.current = setTimeout(() => setScanned(false), 1200);
+        // also clear the remembered lastScanned after the same interval so the
+        // same QR can be scanned again later if needed
+        resetTimeoutRef.current = setTimeout(() => {
+          setScanned(false);
+          lastScannedRef.current = null;
+        }, 1200);
       } catch (err: any) {
         if (err.message && err.message.includes("Duplicate entry")) {
           Snackbar.show({
@@ -62,7 +88,15 @@ const ScanQRScreen: React.FC = () => {
             backgroundColor: Colors.errorRed,
           });
         }
-        setScanned(false);
+        // keep the lastScannedRef populated for the same cooldown to avoid
+        // immediate re-processing; set a timeout to clear it similar to the
+        // success path
+        if (resetTimeoutRef.current)
+          clearTimeout(resetTimeoutRef.current as any);
+        resetTimeoutRef.current = setTimeout(() => {
+          setScanned(false);
+          lastScannedRef.current = null;
+        }, 1200);
       }
     },
     [scanned]

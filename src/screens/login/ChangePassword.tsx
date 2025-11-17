@@ -149,33 +149,6 @@ const ChangePassword = ({ navigation }: any) => {
     validatePassword,
   ]);
 
-  const styles = useMemo(
-    () =>
-      StyleSheet.create({
-        containerStyle: {
-          flex: 1,
-          alignItems: "center",
-          paddingTop: "20%",
-        },
-        imageStyle: {
-          alignSelf: "center",
-          width: 120,
-          height: 120,
-        },
-        buttonStyle: {
-          marginTop: 50,
-        },
-        infoTextStyle: {
-          color: "#d9534f",
-          fontWeight: "bold",
-          fontSize: 16,
-          marginBottom: 20,
-          textAlign: "center",
-        },
-      }),
-    []
-  );
-
   return (
     <KeyboardAvoidingView behavior="padding" style={styles.containerStyle}>
       {user?.isFirstTimeLogin && (
@@ -193,18 +166,21 @@ const ChangePassword = ({ navigation }: any) => {
         textValue={currentPassword}
         onChange={currentPasswordChange}
         errorMessage={errors.currentPassword}
+        errorStyle={{ marginLeft: 26 }}
       />
       <TextInputComponent
         placeholderText={strings.login.newPassword}
         textValue={password}
         onChange={passwordChange}
         errorMessage={errors.password}
+        errorStyle={{ marginLeft: 26 }}
       />
       <TextInputComponent
         placeholderText={strings.login.confirmNewPassword}
         textValue={confirmPassword}
         onChange={confirmPasswordChange}
         errorMessage={errors.confirmPassword}
+        errorStyle={{ marginLeft: 26 }}
       />
       <Button
         label={strings.common.submit}
@@ -215,5 +191,28 @@ const ChangePassword = ({ navigation }: any) => {
     </KeyboardAvoidingView>
   );
 };
+
+const styles = StyleSheet.create({
+  containerStyle: {
+    flex: 1,
+    alignItems: "center",
+    paddingTop: "20%",
+  },
+  imageStyle: {
+    alignSelf: "center",
+    width: 120,
+    height: 120,
+  },
+  buttonStyle: {
+    marginTop: 50,
+  },
+  infoTextStyle: {
+    color: "#d9534f",
+    fontWeight: "bold",
+    fontSize: 16,
+    marginBottom: 20,
+    textAlign: "center",
+  },
+});
 
 export default ChangePassword;
