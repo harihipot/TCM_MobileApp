@@ -15,22 +15,36 @@ type ButtonViewProps = {
   onClick: (event: GestureResponderEvent) => void;
   buttonStyle?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
+  disabled?: boolean;
 };
 
 export const Button = (props: ButtonViewProps) => {
   return (
     <Pressable
-      style={[styles.containerStyle, props.buttonStyle]}
+      style={[
+        styles.containerStyle,
+        props.buttonStyle,
+        props.disabled && styles.disabledContainerStyle,
+      ]}
       onPress={(event) => props.onClick(event)}
+      disabled={props.disabled}
     >
-      <Text style={[styles.textStyle, props.textStyle]}>{props.label}</Text>
+      <Text
+        style={[
+          styles.textStyle,
+          props.textStyle,
+          props.disabled && styles.disabledTextStyle,
+        ]}
+      >
+        {props.label}
+      </Text>
     </Pressable>
   );
 };
 
 const styles = StyleSheet.create({
   containerStyle: {
-    width: "40%",
+    width: "43%",
     alignItems: "center",
     justifyContent: "center",
     alignSelf: "center",
@@ -42,6 +56,13 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "700",
     color: Colors.textColor,
-    paddingVertical: 10,
+    paddingVertical: 12,
+  },
+  disabledContainerStyle: {
+    opacity: 0.6,
+    backgroundColor: "#d3d3d3",
+  },
+  disabledTextStyle: {
+    color: "#bdbdbd",
   },
 });

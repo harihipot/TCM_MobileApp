@@ -1,54 +1,49 @@
-import { TextInputComponent, Button, IconTooltip } from "@/src/components";
-import Select from "@/src/components/Select";
+import {
+  Button,
+  EmptyView,
+  IconTooltip,
+  Loader,
+  TextInputComponent,
+} from "@/src/components";
 import { strings, Colors } from "@/src/constants";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
-import { Pressable, StyleSheet, Text, View, Image } from "react-native";
-import { useSelector } from "react-redux";
+import { Pressable, StyleSheet, Text, View, Image, Alert } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
 
 import * as ImagePicker from "expo-image-picker";
 import Images from "@/assets/images";
-import TextRecognition, {
-  TextRecognitionScript,
-} from "@react-native-ml-kit/text-recognition";
+import TextRecognition from "@react-native-ml-kit/text-recognition";
+import { getbillsForUser } from "@/src/store/reducers/billSlice";
+import moment from "moment";
+import {
+  hasRequiredFields,
+  parseUPIScreenshotText,
+} from "@/src/utils/commonUtils";
+import { ScrollView } from "react-native-gesture-handler";
 
 const ViewBills = () => {
-  const user = useSelector((state: any) => state.auth.user);
-  const [transId, setTransId] = useState("");
-  const [transIdError, setTransIdError] = useState("");
+  const dispatch = useDispatch();
 
-  // Example options for transaction ID dropdown
-  const transactionOptions = [
-    { label: "GPay", value: "1" },
-    { label: "PhonePe", value: "2" },
-    { label: "CRED", value: "3" },
-  ];
+  const user = useSelector((state: any) => state.auth.user);
+  const isLoader = useSelector((state: any) => state.bill.isLoading);
+
+  const billForLastMonth = useSelector((state: any) => state.bill.getBillResp);
+  const [transactionData, setTransactionData] = useState<{
+    amount: any;
+    date: string | null;
+    transactionId: any;
+  } | null>(null);
   const [image, setImage] = useState<string | null>(null);
   const [imageError, setImageError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
-  // Example dynamic values (replace with real data as needed)
-  const monthStart = new Date(2025, 8, 1); // September 1, 2025
-  const monthEnd = new Date(2025, 8, 30); // September 30, 2025
-  const monthName = monthStart.toLocaleString("default", { month: "long" });
-  const presentDays = 20; // dynamic
-  const absentDays = 5; // dynamic
-
-  // Extract transaction details
-  const extractDetails = (text: any) => {
-    console.log("Extracting from text:", text);
-
-    let txnIdMatch = text.match(/\b[0-9A-Z]{10,}\b/); // Transaction ID (alphanumeric 10+ chars)
-    let dateMatch = text.match(/\b\d{2}[-/]\d{2}[-/]\d{4}\b/); // Date format dd-mm-yyyy or dd/mm/yyyy
-    let upiMatch = text.match(/\b[\w.-]+@[\w.-]+\b/); // UPI ID
-
-    return {
-      transactionId: txnIdMatch ? txnIdMatch[0] : null,
-      date: dateMatch ? dateMatch[0] : null,
-      upiId: upiMatch ? upiMatch[0] : null,
-    };
-  };
+  useEffect(() => {
+    dispatch(getbillsForUser({ userId: user.id }));
+  }, []);
 
   const pickImage = React.useCallback(async () => {
+    setIsLoading(true);
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.All,
       allowsEditing: true,
@@ -60,84 +55,124 @@ const ViewBills = () => {
       const recognitionResult = await TextRecognition.recognize(
         result.assets[0].uri
       );
-      const foundDetails = extractDetails(recognitionResult.text);
+      const foundDetails = parseUPIScreenshotText(recognitionResult.text);
+      setTransactionData(foundDetails);
+      setIsLoading(false);
       console.log("Text recognition result:", foundDetails);
     }
+    setIsLoading(false);
   }, []);
 
-  const handleSubmit = React.useCallback(() => {
-    const transIdValid = !!transId.trim();
-    const imageValid = !!image;
-    setTransIdError(transIdValid ? "" : strings.bills.transactionIdRequired);
-    setImageError(!imageValid);
-    if (!transIdValid || !imageValid) return;
-    // Submit logic here
-  }, [transId, image]);
+  const handleSubmit = React.useCallback(() => {}, []);
+
+  const isTransactionDataValid = (td: typeof transactionData) =>
+    hasRequiredFields(td);
 
   return (
-    <View style={styles.containerStyle}>
-      <Text style={styles.dateRange}>
-        Bill For{" "}
-        {`${monthName} ${monthStart.getDate()} - ${monthEnd.getDate()}, ${monthEnd.getFullYear()}`}
-      </Text>
+    <View style={styles.ccStyle}>
+      {!billForLastMonth ? (
+        <EmptyView message={strings.bills.billNotFound} />
+      ) : (
+        <>
+          <ScrollView contentContainerStyle={styles.scrollContainer}>
+            <View style={styles.containerStyle}>
+              <Text style={styles.dateRange}>
+                Bill For{" "}
+                {`${moment(billForLastMonth?.fromDate).format("MMMM")} ${moment(
+                  billForLastMonth?.fromDate
+                ).format("DD")} - ${moment(billForLastMonth?.toDate).format(
+                  "DD"
+                )}, ${moment(billForLastMonth?.toDate).format("YYYY")}`}
+              </Text>
 
-      <View style={styles.rowBetween}>
-        <Text style={styles.label}>{strings.bills.daysPresent}</Text>
-        <Text style={styles.value}>{presentDays} Days</Text>
-      </View>
+              <View style={styles.rowBetween}>
+                <Text style={styles.label}>{strings.bills.daysPresent}</Text>
+                <Text style={styles.value}>
+                  {billForLastMonth?.present} Days
+                </Text>
+              </View>
 
-      <View style={styles.rowBetween}>
-        <Text style={styles.label}>{strings.bills.daysAbsent}</Text>
-        <Text style={styles.value}>{absentDays} Days</Text>
-      </View>
+              <View style={styles.rowBetween}>
+                <Text style={styles.label}>{strings.bills.daysAbsent}</Text>
+                <Text style={styles.value}>
+                  {billForLastMonth?.absent} Days
+                </Text>
+              </View>
 
-      <View style={styles.rowBetween}>
-        <View style={styles.rowIconLabel}>
-          <Text style={styles.label}>{strings.bills.billAmount}</Text>
-          <IconTooltip
-            style={styles.iconMargin}
-            iconName={"info"}
-            tooltipContent={strings.bills.billAmountTooltip}
+              <View style={styles.rowBetween}>
+                <View style={styles.rowIconLabel}>
+                  <Text style={styles.label}>{strings.bills.billAmount}</Text>
+                  <IconTooltip
+                    style={styles.iconMargin}
+                    iconName={"info"}
+                    tooltipContent={strings.bills.billAmountTooltip}
+                  />
+                </View>
+                <Text style={styles.value}>
+                  Rs {billForLastMonth?.totalAmount}
+                </Text>
+              </View>
+
+              <Text
+                style={styles.sectionLabel}
+              >{`${strings.bills.transactionImage} *`}</Text>
+
+              <Pressable style={styles.uploadBtn} onPress={pickImage}>
+                <Image
+                  source={image ? { uri: image } : Images.roundIcon}
+                  style={styles.imagePreview}
+                />
+                <Text
+                  style={[styles.uploadBtnText, imageError && styles.errorRed]}
+                >
+                  {strings.bills.uploadImage}
+                </Text>
+              </Pressable>
+              {isTransactionDataValid(transactionData) && (
+                <>
+                  <TextInputComponent
+                    label={strings.bills.amount}
+                    textValue={transactionData?.amount}
+                    isEditable={false}
+                    labelStyle={styles.inputLabelMargin}
+                    containerStyleProp={styles.inputContainer90}
+                  />
+                  <TextInputComponent
+                    label={strings.bills.date}
+                    textValue={transactionData?.date}
+                    isEditable={false}
+                    labelStyle={styles.inputLabelMargin}
+                    containerStyleProp={styles.inputContainer90}
+                  />
+                  <TextInputComponent
+                    label={strings.bills.transactionId}
+                    textValue={transactionData?.transactionId}
+                    isEditable={false}
+                    labelStyle={styles.inputLabelMargin}
+                    containerStyleProp={styles.inputContainer90}
+                  />
+                </>
+              )}
+            </View>
+          </ScrollView>
+          <Button
+            label={strings.common.submit}
+            onClick={handleSubmit}
+            buttonStyle={styles.submitBtn}
+            disabled={!isTransactionDataValid(transactionData)}
           />
-        </View>
-        <Text style={styles.value}>Rs {presentDays * 160}</Text>
-      </View>
-
-      <Select
-        title={`${strings.bills.upiApps} *`}
-        options={transactionOptions}
-        selectedValue={transId}
-        onValueChange={(value) => {
-          setTransId(value);
-          setTransIdError(value ? "" : strings.bills.transactionIdRequired);
-        }}
-      />
-      {!!transIdError && <Text style={styles.inputError}>{transIdError}</Text>}
-
-      <Text
-        style={styles.sectionLabel}
-      >{`${strings.bills.transactionImage} *`}</Text>
-
-      <Pressable style={styles.uploadBtn} onPress={pickImage}>
-        <Image
-          source={image ? { uri: image } : Images.roundIcon}
-          style={styles.imagePreview}
-        />
-        <Text style={[styles.uploadBtnText, imageError && styles.errorRed]}>
-          {strings.bills.uploadImage}
-        </Text>
-      </Pressable>
-
-      <Button
-        label={strings.common.submit}
-        onClick={handleSubmit}
-        buttonStyle={styles.submitBtn}
-      />
+          {(isLoading || isLoader) && <Loader />}
+        </>
+      )}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  ccStyle: {
+    flex: 1,
+    backgroundColor: "#fff",
+  },
   containerStyle: {
     paddingTop: "10%",
     paddingHorizontal: 16,
@@ -149,6 +184,11 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: Colors.textColor,
     marginBottom: 20,
+  },
+  scrollContainer: {
+    flexGrow: 1,
+    paddingBottom: 100,
+    backgroundColor: Colors.white,
   },
   label: {
     fontSize: 16,
@@ -166,6 +206,13 @@ const styles = StyleSheet.create({
     width: "100%",
     marginBottom: 16,
     marginTop: 0,
+  },
+  inputLabelMargin: {
+    marginTop: 16,
+  },
+  inputContainer90: {
+    width: "95%",
+    marginTop: 10,
   },
   uploadBtn: {
     borderColor: Colors.primary,
@@ -191,6 +238,9 @@ const styles = StyleSheet.create({
   },
   submitBtn: {
     marginTop: 20,
+    position: "absolute",
+    bottom: 30,
+    alignSelf: "center",
   },
   rowBetween: {
     flexDirection: "row",

@@ -28,9 +28,6 @@ const CreateMenu = () => {
   // the meal id for which the modal is currently open
   const [currentMealId, setCurrentMealId] = useState<string | null>(null);
 
-  //   console.log("meals", mealsList);
-  //   console.log("foodItemsList", foodItemsList);
-
   const openAddFoodItem = (mealId: string) => {
     setCurrentMealId(mealId);
     setIsAddFoodItemVisible(true);

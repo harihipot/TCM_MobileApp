@@ -12,18 +12,17 @@ import {
 import { useSelector, useDispatch } from "react-redux";
 import Snackbar from "react-native-snackbar";
 import { Colors, strings } from "@/src/constants";
-import { init as initDB } from "@/src/utils/databaseUtils";
+import { initDB } from "@/src/utils/databaseUtils";
 import { getMenuItems } from "@/src/store/reducers/menuSlice";
 import moment from "moment";
 import Images from "@/assets/images";
 import { getMeals } from "@/src/store/reducers/mealsSlice";
-import { getFoodItems } from "@/src/store/reducers/foodItemsSlice";
 import images from "@/assets/images";
 
 const HomeScreen = (props: any) => {
   const dispatch = useDispatch();
 
-  const [mealNow, setMealNow] = React.useState<any>({});
+  const [mealNow, setMealNow] = React.useState<any>(null);
   const user = useSelector((state: any) => state.auth.user);
   const yourMenuState = useSelector((state: any) => state.menu.menuItems);
 
@@ -79,45 +78,51 @@ const HomeScreen = (props: any) => {
         resizeMode="cover"
       >
         <View style={styles.mealCard}>
-          <Text style={styles.mealTitle}>
-            Today's {mealNow?.title ?? "Menu"}
-          </Text>
-          {mealNow && Array.isArray(mealNow?.meals) && (
-            // column-major grid: first column gets first 5 items, second column next 5 (max 10)
-            <View style={styles.mealGrid}>
-              <View style={styles.mealGridColumn}>
-                {mealNow.meals
-                  .slice(0, 5)
-                  .map((item: string, index: number) => (
-                    <View
-                      key={"mealNowItem_col1_" + index}
-                      style={styles.mealGridItem}
-                    >
-                      <Image
-                        source={images.foodIcon}
-                        style={styles.foodIconStyle}
-                      />
-                      <Text style={styles.mealItem}>{item}</Text>
-                    </View>
-                  ))}
-              </View>
-              <View style={styles.mealGridColumn}>
-                {mealNow.meals
-                  .slice(5, 10)
-                  .map((item: string, index: number) => (
-                    <View
-                      key={"mealNowItem_col2_" + index}
-                      style={styles.mealGridItem}
-                    >
-                      <Image
-                        source={images.foodIcon}
-                        style={styles.foodIconStyle}
-                      />
-                      <Text style={styles.mealItem}>{item}</Text>
-                    </View>
-                  ))}
-              </View>
-            </View>
+          {mealNow ? (
+            <>
+              <Text style={styles.mealTitle}>
+                Today's {mealNow?.title ?? "Menu"}
+              </Text>
+              {mealNow && Array.isArray(mealNow?.meals) && (
+                // column-major grid: first column gets first 5 items, second column next 5 (max 10)
+                <View style={styles.mealGrid}>
+                  <View style={styles.mealGridColumn}>
+                    {mealNow.meals
+                      .slice(0, 5)
+                      .map((item: string, index: number) => (
+                        <View
+                          key={"mealNowItem_col1_" + index}
+                          style={styles.mealGridItem}
+                        >
+                          <Image
+                            source={images.foodIcon}
+                            style={styles.foodIconStyle}
+                          />
+                          <Text style={styles.mealItem}>{item}</Text>
+                        </View>
+                      ))}
+                  </View>
+                  <View style={styles.mealGridColumn}>
+                    {mealNow.meals
+                      .slice(5, 10)
+                      .map((item: string, index: number) => (
+                        <View
+                          key={"mealNowItem_col2_" + index}
+                          style={styles.mealGridItem}
+                        >
+                          <Image
+                            source={images.foodIcon}
+                            style={styles.foodIconStyle}
+                          />
+                          <Text style={styles.mealItem}>{item}</Text>
+                        </View>
+                      ))}
+                  </View>
+                </View>
+              )}
+            </>
+          ) : (
+            <Text style={styles.mealTitle}>Welcome</Text>
           )}
         </View>
       </ImageBackground>

@@ -1,22 +1,25 @@
 import Images from "@/assets/images";
 import { Colors } from "@/src/constants";
+import { mealItemBasedOnNow } from "@/src/utils/commonUtils";
 import React from "react";
 import { SafeAreaView, StyleSheet, Text } from "react-native";
 import QRCode from "react-native-qrcode-svg";
 import { useSelector } from "react-redux";
 
 const ShowQRScreen = () => {
+  const mealsList = useSelector((state: any) => state.meals.mealsList);
   const user = useSelector((state: any) => state.auth.user);
+  const currentMeal = mealItemBasedOnNow(mealsList);
 
   return (
     <SafeAreaView style={styles.containerStyle}>
       <Text style={[styles.textStyle, styles.nameStyle]}>
-        {user.firstName + " " + user.lastName}
+        {user?.firstName + " " + user?.lastName}
         {"\n\n"}
-        {user.rollNo}
+        {user?.rollNo}
       </Text>
       <QRCode
-        value={`${user.rollNo}&${user.messNo}&${user.firstName}&${user.batch}`}
+        value={`${user?.messNo}&${user?.id}`}
         color={Colors.primary}
         logo={Images.roundIcon}
         logoSize={60}
@@ -24,7 +27,7 @@ const ShowQRScreen = () => {
         size={300}
       />
       <Text style={[styles.textStyle, styles.studentIdStyle]}>
-        Mess ID: {user.messNo}
+        {currentMeal?.name}
       </Text>
     </SafeAreaView>
   );
@@ -43,10 +46,10 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   nameStyle: {
-    marginBottom: 50,
+    marginBottom: 30,
   },
   studentIdStyle: {
-    marginTop: 50,
+    marginTop: 30,
   },
 });
 export default ShowQRScreen;

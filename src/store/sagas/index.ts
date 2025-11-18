@@ -5,6 +5,7 @@ import menuSaga from "./menuSaga";
 import mealsSaga from "./mealsSaga";
 import foodItemsSaga from "./foodItemsSaga";
 import attendanceSaga from "./attendanceSaga";
+import billSaga from "./billSaga";
 
 function* rootSaga() {
   yield all([
@@ -14,6 +15,7 @@ function* rootSaga() {
     mealsSaga(),
     foodItemsSaga(),
     attendanceSaga(),
+    billSaga(),
   ]);
 }
 

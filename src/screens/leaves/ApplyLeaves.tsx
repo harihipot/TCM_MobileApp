@@ -5,7 +5,7 @@ import { applyLeave, resetApplyLeave } from "@/src/store/reducers/leaveSlice";
 import moment from "moment";
 import React, { useEffect, useState } from "react";
 
-import { Alert, StyleSheet, Text, View } from "react-native";
+import { Alert, Image, StyleSheet, Text, View } from "react-native";
 import { Calendar } from "react-native-calendars";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -73,6 +73,11 @@ const ApplyLeaves = () => {
   return (
     <View style={styles.containerStyle}>
       <>
+        <Image
+          style={styles.imageStyle}
+          resizeMode="contain"
+          source={Images.roundIcon}
+        />
         <TextInputComponent
           placeholderText={strings.leave.fromDate}
           textValue={
@@ -144,7 +149,7 @@ const styles = StyleSheet.create({
   containerStyle: {
     flex: 1,
     alignItems: "center",
-    paddingTop: "35%",
+    paddingTop: "25%",
   },
   buttonStyle: {
     marginTop: 40,
@@ -161,6 +166,11 @@ const styles = StyleSheet.create({
     zIndex: 1,
     top: -300,
     borderRadius: 20,
+  },
+  imageStyle: {
+    alignSelf: "center",
+    width: 130,
+    height: 130,
   },
 });
 

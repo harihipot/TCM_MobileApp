@@ -88,8 +88,8 @@ export const strings = {
     needPermission: "We need your permission to show the camera",
   },
   attendance: {
-    totalMealEntries: "Total meal entries:",
-    mealIds: "Meal IDs:",
+    totalEntries: "Total entries:",
+    mealType: "Meal Type:",
     markAttendance: "Mark Attendance",
     noEntries: "There are no meal entries to submit.",
     noEntriesFound: "No entries found",
@@ -99,6 +99,8 @@ export const strings = {
   },
   bills: {
     hi: "Hi",
+    amount: "Amount",
+    date: "Date",
     transactionId: "Transaction ID",
     upiApps: " UPI Apps",
     noHistory: "No billing history available.",
@@ -107,6 +109,7 @@ export const strings = {
     transactionImage: "Transaction Image",
     uploadImage: "Upload Transaction Image",
     billAmount: "Bill Amount",
+    billNotFound: "Bill not found for the selected month.",
     transactionIdRequired: "Transaction ID is required.",
     billAmountTooltip: "This bill amount calculated like Day Present* 160",
   },

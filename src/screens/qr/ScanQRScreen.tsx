@@ -1,5 +1,7 @@
 import { Button } from "@/src/components";
 import { Colors, strings } from "@/src/constants";
+import { mealItemBasedOnNow } from "@/src/utils/commonUtils";
+import { insertMealEntry } from "@/src/utils/databaseUtils";
 import { CameraView, useCameraPermissions } from "expo-camera";
 import React, {
   useState,
@@ -10,14 +12,19 @@ import React, {
 } from "react";
 import { StyleSheet, Text, View, ActivityIndicator } from "react-native";
 import Snackbar from "react-native-snackbar";
+import { useSelector } from "react-redux";
 
 const ScanQRScreen: React.FC = () => {
+  const mealsList = useSelector((state: any) => state.meals.mealsList);
+
   const [permission, requestPermission] = useCameraPermissions();
   const [scanned, setScanned] = useState(false);
   const insertMealEntryRef = useRef<any>(null);
   const resetTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   // keep last scanned raw data to avoid processing the same QR repeatedly
   const lastScannedRef = useRef<string | null>(null);
+
+  const currentMeal = mealItemBasedOnNow(mealsList);
 
   // Example QR: "userID|mealD" (customize parsing as needed)
   const handleBarCodeScanned = useCallback(
@@ -42,11 +49,9 @@ const ScanQRScreen: React.FC = () => {
       setScanned(true);
       lastScannedRef.current = raw;
 
-      const [userID, username, mealD] = raw
-        .split("&")
-        .map((v) => v?.trim?.() || "");
+      const [messNo, userID] = raw.split("&").map((v) => v?.trim?.() || "");
 
-      if (!userID || !mealD) {
+      if (!userID || !currentMeal?.id) {
         Snackbar.show({
           text: strings.qr.invalidFormat,
           duration: Snackbar.LENGTH_SHORT,
@@ -56,16 +61,12 @@ const ScanQRScreen: React.FC = () => {
         return;
       }
       try {
-        // Import only once for performance
-        if (!insertMealEntryRef.current) {
-          const mod = await import("@/src/utils/databaseUtils");
-          insertMealEntryRef.current = mod.insertMealEntry;
-        }
-        await insertMealEntryRef.current(userID, mealD);
-        Snackbar.show({
-          text: strings.qr.saved,
-          duration: Snackbar.LENGTH_SHORT,
-          backgroundColor: Colors.primary,
+        insertMealEntry(userID, currentMeal?.id).then(() => {
+          Snackbar.show({
+            text: strings.qr.saved,
+            duration: Snackbar.LENGTH_SHORT,
+            backgroundColor: Colors.primary,
+          });
         });
         // store timeout so we can clear it on unmount to avoid setting state
         // also clear the remembered lastScanned after the same interval so the
@@ -139,6 +140,9 @@ const ScanQRScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
+      <Text style={styles.mealText}>
+        {currentMeal.name + "\n\n" + currentMeal.timing}
+      </Text>
       <CameraView
         style={styles.camera}
         barcodeScannerSettings={scannerSettings}
@@ -156,7 +160,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
-    justifyContent: "center",
+    paddingTop: "20%",
   },
   message: {
     textAlign: "center",
@@ -166,7 +170,6 @@ const styles = StyleSheet.create({
     width: 300,
     height: 300,
   },
-
   text: {
     fontSize: 24,
     fontWeight: "bold",
@@ -174,6 +177,12 @@ const styles = StyleSheet.create({
     marginHorizontal: 30,
     marginTop: 40,
     color: Colors.textColor,
+  },
+  mealText: {
+    fontSize: 20,
+    textAlign: "center",
+    fontWeight: "600",
+    marginBottom: 20,
   },
 });
 

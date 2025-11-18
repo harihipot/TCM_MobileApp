@@ -149,9 +149,6 @@ const DrawerNavigator = () => {
         name={strings.headers.changePassword}
         component={ChangePassword}
       />
-      {role === "student" && (
-        <Drawer.Screen name={strings.headers.contactUs} component={FoodList} />
-      )}
     </Drawer.Navigator>
   );
 };

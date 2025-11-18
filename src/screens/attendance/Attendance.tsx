@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { SafeAreaView, StyleSheet, Text, View, Alert } from "react-native";
-import { init as initDB, getAllMealEntries } from "@/src/utils/databaseUtils";
+import { getAllMealEntries } from "@/src/utils/databaseUtils";
 import { Button, Loader } from "@/src/components";
 import { Colors, strings } from "@/src/constants";
 import { clearAllMealEntries } from "@/src/utils/databaseUtils";
@@ -10,17 +10,23 @@ import {
   submitAttendance,
   resetAttendanceState,
 } from "@/src/store/reducers/attendanceSlice";
+import moment from "moment";
 
 const Attendance = (props: any) => {
+  const dispatch = useDispatch();
+
+  const user = useSelector((state: any) => state.auth.user);
+  const attendanceState = useSelector((state: any) => state.attendance);
+
   const [mealEntries, setMealEntries] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
 
   const loadEntries = async () => {
     setLoading(true);
     try {
-      const items = await getAllMealEntries();
-      // ensure we have an array
-      setMealEntries(Array.isArray(items) ? items : []);
+      getAllMealEntries().then((items) => {
+        setMealEntries(Array.isArray(items) ? items : []);
+      });
     } catch (err: any) {
       Alert.alert(strings.alert.error, err?.message ?? String(err));
     } finally {
@@ -29,20 +35,14 @@ const Attendance = (props: any) => {
   };
 
   useEffect(() => {
-    // initialize DB (safe if already initialized)
-    initDB().catch((err: any) => {
-      Alert.alert(strings.alert.error, err?.message ?? String(err));
-    });
     loadEntries();
   }, []);
 
-  const dispatch = useDispatch();
-  const user = useSelector((state: any) => state.auth.user);
-  const attendanceState = useSelector((state: any) => state.attendance);
   useEffect(() => {
     if (attendanceState?.submitResp) {
       Snackbar.show({
-        text: attendanceState.submitResp?.message || strings.attendance.submitted,
+        text:
+          attendanceState.submitResp?.message || strings.attendance.submitted,
         duration: Snackbar.LENGTH_SHORT,
         backgroundColor: Colors.primary,
       });
@@ -76,7 +76,7 @@ const Attendance = (props: any) => {
       return;
     }
 
-    if (!user || !user.id) {
+    if (!user || !user?.id) {
       Alert.alert(strings.alert.error, "User not available");
       return;
     }
@@ -91,12 +91,12 @@ const Attendance = (props: any) => {
           onPress: () => {
             // build payload
             const attendances = mealEntries.map((m: any) => ({
-              date: m.mealD, // local DB stores mealD
-              mealId: m.id,
-              userId: user.id,
+              date: moment().format("YYYY-MM-DD"), // local DB stores mealD
+              mealId: m.mealID,
+              userId: parseInt(m.userID),
             }));
             const payload = {
-              attendances,
+              attendances: attendances,
               createdBy: user.id,
             };
             dispatch(submitAttendance(payload));
@@ -107,22 +107,24 @@ const Attendance = (props: any) => {
   };
 
   const mealCount = mealEntries?.length ?? 0;
-  const mealIds = mealEntries.map((m: any) => m.id).join(", ");
+  const mealIds = mealEntries.map((m: any) => m.mealID);
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.card}>
-        <Text style={styles.label}>{strings.attendance.totalMealEntries}</Text>
+        <Text style={styles.label}>{strings.attendance.totalEntries}</Text>
+        <Text style={styles.value}>{mealCount}</Text>
+      </View>
+      <View style={styles.card}>
+        <Text style={styles.label}>{strings.attendance.mealType}</Text>
         <Text style={styles.value}>{mealCount}</Text>
       </View>
 
-      <View style={styles.card}>
-        <Text style={styles.label}>{strings.attendance.mealIds}</Text>
-        <Text style={styles.value}>{mealIds || strings.attendance.noEntriesFound}</Text>
-      </View>
-
       <View style={styles.buttonContainer}>
-        <Button label={strings.attendance.markAttendance} onClick={onMarkAttendance} />
+        <Button
+          label={strings.attendance.markAttendance}
+          onClick={onMarkAttendance}
+        />
       </View>
     </SafeAreaView>
   );
@@ -147,8 +149,8 @@ const styles = StyleSheet.create({
   },
   label: {
     color: Colors.primary,
-    fontSize: 14,
-    fontWeight: "600",
+    fontSize: 16,
+    fontWeight: "bold",
     marginBottom: 6,
   },
   value: {

@@ -16,8 +16,6 @@ function* getMealsSaga(action: any): Generator<any, void, any> {
       yield put(getMealsSuccess(response.data));
     }
   } catch (error: any) {
-    console.log("errror", error);
-
     yield put(getMealsFailure(error.message));
   }
 }

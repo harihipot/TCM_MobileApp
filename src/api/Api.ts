@@ -15,10 +15,8 @@ export const apiCall = async (
       data,
       ...config,
     });
-    // console.log("API response:", response);
     return response;
   } catch (error: any) {
-    // console.log("API call error:", error);
     throw new Error(
       error?.response?.data?.message || error.message || "API call failed"
     );

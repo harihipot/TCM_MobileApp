@@ -5,6 +5,7 @@ import menuSlice from "./menuSlice";
 import mealsSlice from "./mealsSlice";
 import foodItemsSlice from "./foodItemsSlice";
 import attendanceSlice from "./attendanceSlice";
+import billSlice from "./billSlice";
 
 const appReducer = combineReducers({
   auth: authSlice,
@@ -13,6 +14,7 @@ const appReducer = combineReducers({
   meals: mealsSlice,
   foodItems: foodItemsSlice,
   attendance: attendanceSlice,
+  bill: billSlice,
 });
 
 const rootReducer = (state: any, action: any) => {

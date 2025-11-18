@@ -2,85 +2,99 @@ import * as SQLite from "expo-sqlite";
 
 const DB_NAME = "tcm_meals.db";
 const TABLE_NAME = "meal_entry";
-const database = SQLite.openDatabaseSync(DB_NAME);
+let db: SQLite.SQLiteDatabase | null = null;
+
+export async function initDB() {
+  if (!db) {
+    db = await SQLite.openDatabaseAsync(DB_NAME);
+  }
+  createMealTable(db).catch((error) => {
+    console.error("Error creating meal_entry table:", error);
+  });
+  return db;
+}
 
 // Initialize DB and create meal_entry table
-export const init = () => {
+export const createMealTable = async (database: SQLite.SQLiteDatabase): Promise<boolean> => {
   try {
-    database.runSync(
+    database.execAsync(
       `CREATE TABLE IF NOT EXISTS ${TABLE_NAME} (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         userID TEXT NOT NULL,
-        mealD TEXT NOT NULL
-      );`,
-      []
+        mealID TEXT NOT NULL
+      )`
     );
-    return Promise.resolve(true);
+    return true;
   } catch (error) {
     return Promise.reject(error);
   }
 };
 
-// Insert meal entry, check for duplicate (same userID and mealD)
-export const insertMealEntry = (userID: string, mealD: string) => {
+// Insert meal entry, check for duplicate (same userID and mealID)
+export const insertMealEntry = async (userID: string, mealID: string): Promise<boolean> => {
   try {
+    const database = await initDB();
     const existing = database.getAllSync<any>(
-      `SELECT 1 FROM ${TABLE_NAME} WHERE userID = ? AND mealD = ?;`,
-      [userID, mealD]
+      `SELECT 1 FROM ${TABLE_NAME} WHERE userID = ? AND mealID = ?;`,
+      [userID, mealID]
     );
     if (existing.length > 0) {
       return Promise.reject(
-        new Error("Duplicate entry for this user and mealD")
+        new Error("Duplicate entry for this user and mealID")
       );
     }
     database.runSync(
-      `INSERT INTO ${TABLE_NAME} (userID, mealD) VALUES (?, ?);`,
-      [userID, mealD]
+      `INSERT INTO ${TABLE_NAME} (userID, mealID) VALUES (?, ?);`,
+      [userID, mealID]
     );
-    return Promise.resolve(true);
+    return true;
   } catch (error) {
     return Promise.reject(error);
   }
 };
 
 // Update meal entry by id
-export const updateMealEntry = (id: number, userID: string, mealD: string) => {
+export const updateMealEntry = async (id: number, userID: string, mealID: string): Promise<boolean> => {
   try {
+    const database = await initDB();
     database.runSync(
-      `UPDATE ${TABLE_NAME} SET userID = ?, mealD = ? WHERE id = ?;`,
-      [userID, mealD, id]
+      `UPDATE ${TABLE_NAME} SET userID = ?, mealID = ? WHERE id = ?;`,
+      [userID, mealID, id]
     );
-    return Promise.resolve(true);
+    return true;
   } catch (error) {
     return Promise.reject(error);
   }
 };
 
 // Delete meal entry by id
-export const deleteMealEntry = (id: number) => {
+export const deleteMealEntry = async (id: number): Promise<boolean> => {
   try {
+    const database = await initDB();
     database.runSync(`DELETE FROM ${TABLE_NAME} WHERE id = ?;`, [id]);
-    return Promise.resolve(true);
+    return true;
   } catch (error) {
     return Promise.reject(error);
   }
 };
 
 // Get all meal entries
-export const getAllMealEntries = () => {
+export const getAllMealEntries = async (): Promise<any[]> => {
   try {
+    const database = await initDB();
     const items = database.getAllSync<any>(`SELECT * FROM ${TABLE_NAME};`, []);
-    return Promise.resolve(items);
+    return items;
   } catch (error) {
     return Promise.reject(error);
   }
 };
 
 // Clear all data in meal_entry table
-export const clearAllMealEntries = () => {
+export const clearAllMealEntries = async (): Promise<boolean> => {
   try {
+    const database = await initDB();
     database.runSync(`DELETE FROM ${TABLE_NAME};`, []);
-    return Promise.resolve(true);
+    return true;
   } catch (error) {
     return Promise.reject(error);
   }

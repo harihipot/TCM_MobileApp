@@ -51,7 +51,6 @@ const MealList = () => {
 
   useEffect(() => {
     if (createMealResp) {
-      console.log("creerer", createMealResp);
       dispatch(getMeals({}));
       setIsAddMealVisible(false);
       dispatch(resetCreateMealState());
