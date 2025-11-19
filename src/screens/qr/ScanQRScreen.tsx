@@ -140,9 +140,12 @@ const ScanQRScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.mealText}>
-        {currentMeal.name + "\n\n" + currentMeal.timing}
-      </Text>
+      {currentMeal && (
+        <Text style={styles.mealText}>
+          {currentMeal?.name + "\n\n" + currentMeal?.timing}
+        </Text>
+      )}
+
       <CameraView
         style={styles.camera}
         barcodeScannerSettings={scannerSettings}
